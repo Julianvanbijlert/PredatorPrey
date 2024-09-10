@@ -8,6 +8,9 @@ namespace Project1
         protected double deathRate;
         protected double walkRate;
 
+        public int x { get; protected set; }
+        public int y { get; protected set; }
+
         protected Entity()
         {
             this.birthRate = Config.birthRate;
@@ -15,6 +18,14 @@ namespace Project1
             this.walkRate = Config.walkRate;
         }
 
+
+        public void Move(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public abstract Action ChooseAction();
     }
 
     public class Predator : Entity
@@ -23,6 +34,11 @@ namespace Project1
         {
             
         }
+
+        public override Action ChooseAction()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Prey : Entity
@@ -30,6 +46,11 @@ namespace Project1
         public Prey() : base()
         {
            
+        }
+
+        public override Action ChooseAction()
+        {
+            throw new NotImplementedException();
         }
     }
 
