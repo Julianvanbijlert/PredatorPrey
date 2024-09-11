@@ -26,6 +26,8 @@ namespace Project1
         private void Initialize()
         {
             _world = new World();
+
+            
         }
 
         /// <summary>
@@ -55,6 +57,11 @@ namespace Project1
 
             // add birthed entities to the world
             _world.ReleaseBirthedEntities();
+
+            // print the world
+            //Output.PrintWorld(_world);
+
+            Output.PrintList(_world);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Project1
 { 
     public struct Config
     {
-        public const int worldSize = 512;
+        public const int worldSize = 50;
 
         public const double deathRate = 0.025;
         public const double birthRate = 1;
@@ -19,6 +19,8 @@ namespace Project1
         public const double preditorDensity = 0.3;
         public const double preyDensity = 0.3;
 
-        public const int amountOfRounds = 15;
+        public const int amountOfRounds = 1500;
+
+        public const int BlockSize = 10;
     }
 }

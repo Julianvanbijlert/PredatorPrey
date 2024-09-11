@@ -249,5 +249,10 @@ namespace Project1
         /// Birthed entities do not count yet.
         /// </summary>
         public int AmountOfEntities => entities.Count;
+
+
+        public List<Entity>[,] GetGrid => grid;
+
+        public HashSet<Entity> GetEntities => entities;
     }
 }
