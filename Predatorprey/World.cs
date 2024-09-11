@@ -16,33 +16,33 @@ namespace Project1
         public World()
         {
             //Make the Entities
-                int amountPrey = (int)(Config.worldSize * Config.preyDensity);
-                int amountPreditor = (int)(Config.worldSize * Config.preditorDensity);  
+            int amountPrey = (int)(Config.worldSize * Config.preyDensity);
+            int amountPreditor = (int)(Config.worldSize * Config.preditorDensity);
 
-                for (int i = 0; i < amountPrey; i++)
-                {
-                    AddPrey();
-                }
+            for (int i = 0; i < amountPrey; i++)
+            {
+                AddPrey();
+            }
 
-                for (int i = 0; i < amountPreditor; i++)
-                {
-                    AddPreditor();
-                }
+            for (int i = 0; i < amountPreditor; i++)
+            {
+                AddPredator();
+            }
 
 
             //Make the world grid
-                int size = Config.worldSize;
-                grid = new List<Entity>[size, size];
+            int size = Config.worldSize;
+            grid = new List<Entity>[size, size];
 
 
-                
-                // This is under the assumption that the size does not change and that it will always be a square
-                for (var index0 = 0; index0 < size; index0++)
+
+            // This is under the assumption that the size does not change and that it will always be a square
+            for (var index0 = 0; index0 < size; index0++)
                 for (var index1 = 0; index1 < size; index1++)
                 {
                     grid[index0, index1] = new List<Entity>();
                 }
-            
+
         }
 
 
@@ -58,25 +58,12 @@ namespace Project1
         /// <summary>
         /// Adds one preditor to the world
         /// </summary>
-        public void AddPreditor()
+        public void AddPredator()
         {
             entities.Add(new Predator());
         }
 
-
-        void Round()
-        {
-            Entity entity;
-            for (int i = 0; i < entities.Count; i++)
-            {
-                entity = GetRandomEntity();
-
-
-
-            }
-        }
-
-        Entity GetRandomEntity()
+        public Entity GetRandomEntity()
         {
             return entities[rnd.Next(entities.Count)];
         }
@@ -85,9 +72,11 @@ namespace Project1
         {
             grid[entity.x, entity.y].Remove(entity);
             grid[x, y].Add(entity);
-            
+
             entity.Move(x, y);
 
         }
+
+        public int AmountOfEntities => entities.Count;
     }
 }
