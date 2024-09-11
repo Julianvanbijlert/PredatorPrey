@@ -16,6 +16,9 @@ namespace Project1
         private HashSet<Prey> prey = new HashSet<Prey>();
         private HashSet<Entity> entities = new HashSet<Entity>();
 
+        private HashSet<Predator> birthedPredators = new HashSet<Predator>();
+        private HashSet<Prey> birthedPrey = new HashSet<Prey>();
+
         public World()
         {
             rnd = new Random();
@@ -48,12 +51,12 @@ namespace Project1
 
             for (int i = 0; i < amountPrey; i++)
             {
-                AddPrey(rnd.Next(size), rnd.Next(size));
+                AddPrey(new Prey(this, rnd.Next(size), rnd.Next(size)));
             }
 
             for (int i = 0; i < amountPredator; i++)
             {
-                AddPredator(rnd.Next(size), rnd.Next(size));
+                AddPredator(new Predator(this, rnd.Next(size), rnd.Next(size)));
             }
         }
 
@@ -61,22 +64,20 @@ namespace Project1
         /// <summary>
         /// Adds one prey to the world
         /// </summary>
-        public void AddPrey(int x, int y)
+        public void AddPrey(Prey p)
         {
-            Prey newPrey = new Prey(this, x, y);
-            entities.Add(newPrey);
-            prey.Add(newPrey);
+            entities.Add(p);
+            prey.Add(p);
         }
 
 
         /// <summary>
-        /// Adds one preditor to the world
+        /// Adds one predator to the world
         /// </summary>
-        public void AddPredator(int x, int y)
+        public void AddPredator(Predator p)
         {
-            Predator newPredator = new Predator(this, x, y);
-            entities.Add(newPredator);
-            predators.Add(newPredator);
+            entities.Add(p);
+            predators.Add(p);
         }
 
         public Entity GetRandomEntity()
@@ -127,6 +128,32 @@ namespace Project1
         private bool IsWithinGrid(int x, int y)
         {
             return x >= 0 && x < Config.worldSize && y >= 0 && y < Config.worldSize;
+        }
+
+        public void AddBirthPredator(Predator p)
+        {
+            birthedPredators.Add(p);
+        }
+
+        public void AddBirthPrey(Prey p)
+        {
+            birthedPrey.Add(p);
+        }
+
+        public void ReleaseBirthedEntities()
+        {
+            foreach (Predator p in birthedPredators)
+            {
+                AddPredator(p);
+            }
+
+            foreach (Prey p in birthedPrey)
+            {
+                AddPrey(p);
+            }
+
+            birthedPredators.Clear();
+            birthedPrey.Clear();
         }
 
         public int AmountOfPredators => predators.Count;

@@ -103,7 +103,7 @@ namespace Project1
 
         protected override void GiveBirth()
         {
-            world.AddPredator(this.x, this.y);
+            world.AddBirthPredator(new Predator(world, this.x, this.y));
         }
 
         protected override void Die()
@@ -124,7 +124,7 @@ namespace Project1
 
         protected override void GiveBirth()
         {
-            world.AddPrey(this.x, this.y);
+            world.AddBirthPrey(new Prey(world, this.x, this.y));
         }
 
         protected override void Die()

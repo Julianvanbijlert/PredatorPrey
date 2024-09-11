@@ -38,6 +38,8 @@ namespace Project1
                 Entity entity = _world.GetRandomEntity();
                 entity.AttemptActions();
             }
+
+            _world.ReleaseBirthedEntities();
         }
     }
 }
