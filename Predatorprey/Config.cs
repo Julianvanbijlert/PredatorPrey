@@ -19,5 +19,6 @@ namespace Project1
         public const double preditorDensity = 0.3;
         public const double preyDensity = 0.3;
 
+        public const int amountOfRounds = 5;
     }
 }

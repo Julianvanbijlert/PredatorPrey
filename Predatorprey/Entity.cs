@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1
 {
@@ -14,10 +16,13 @@ namespace Project1
         public int x { get; protected set; }
         public int y { get; protected set; }
 
-        protected Entity(World _world)
+        protected Entity(World _world, int x, int y)
         {
             world = _world;
             rnd = world.rnd;
+
+            this.x = x;
+            this.y = y;
 
             this.birthRate = Config.birthRate;
             this.deathRate = Config.deathRate;
@@ -25,7 +30,7 @@ namespace Project1
         }
 
 
-        public void Move(int x, int y)
+        public void ChangeLocation(int x, int y)
         {
             this.x = x;
             this.y = y;
@@ -43,7 +48,7 @@ namespace Project1
                 int newX = rnd.Next(Config.worldSize);
                 int newY = rnd.Next(Config.worldSize);
 
-                Move(newX, newY);
+                world.MoveEntity(this, newX, newY);
             }
         }
 
@@ -59,32 +64,57 @@ namespace Project1
 
         protected abstract void GiveBirth();
 
-        private void Die()
-        {
-            world.RemoveEntity(this);
-        }
+        protected abstract void Die();
     }
 
     public class Predator : Entity
     {
-        public Predator(World world) : base(world){ }
+        public Predator(World world, int x, int y) : base(world, x, y){ }
 
         public override void AttemptActions()
         {
+            AttemptPredation();
             AttemptWalk();
             AttemptBirth();
             AttemptDeath();
         }
 
+        private void AttemptPredation()
+        {
+            foreach (Prey p in PossiblePrey())
+            {
+                if (Attempt.Success(rnd, Config.predationRate))
+                {
+                    world.RemovePrey(p);
+                }
+            }
+        }
+
+        private List<Entity> PossiblePrey()
+        {
+            List<Entity> location = world.PreyOnLocation(this.x, this.y);
+            List<Entity> up = world.PreyOnLocation(this.x, this.y + 1);
+            List<Entity> right = world.PreyOnLocation(this.x + 1, this.y);
+            List<Entity> down = world.PreyOnLocation(this.x, this.y - 1);
+            List<Entity> left = world.PreyOnLocation(this.x - 1, this.y);
+
+            return location.Concat(up).Concat(right).Concat(down).Concat(left).ToList();
+        } 
+
         protected override void GiveBirth()
         {
             world.AddPredator(this.x, this.y);
+        }
+
+        protected override void Die()
+        {
+            world.RemovePredator(this);
         }
     }
 
     public class Prey : Entity
     {
-        public Prey(World world) : base(world){ }
+        public Prey(World world, int x, int y) : base(world, x, y){ }
         public override void AttemptActions()
         {
             AttemptWalk();
@@ -95,6 +125,11 @@ namespace Project1
         protected override void GiveBirth()
         {
             world.AddPrey(this.x, this.y);
+        }
+
+        protected override void Die()
+        {
+            world.RemovePrey(this);
         }
     }
 }

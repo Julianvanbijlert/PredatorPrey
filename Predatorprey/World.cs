@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,43 +11,50 @@ namespace Project1
     {
         public Random rnd { get; private set; }
 
-        List<Entity>[,] grid;
-        List<Predator> predators = new List<Predator>();
-        List<Prey> prey = new List<Prey>();
-        List<Entity> entities = new List<Entity>();
+        private List<Entity>[,] grid;
+        private HashSet<Predator> predators = new HashSet<Predator>();
+        private HashSet<Prey> prey = new HashSet<Prey>();
+        private HashSet<Entity> entities = new HashSet<Entity>();
 
         public World()
         {
             rnd = new Random();
 
-            //Make the Entities
-            int amountPrey = (int)(Config.worldSize * Config.preyDensity);
-            int amountPreditor = (int)(Config.worldSize * Config.preditorDensity);
+            InitializeGrid();
 
-            for (int i = 0; i < amountPrey; i++)
-            {
-                AddPrey();
-            }
+            InitializeEntities();
+        }
 
-            for (int i = 0; i < amountPreditor; i++)
-            {
-                AddPredator();
-            }
-
-
+        private void InitializeGrid()
+        {
             //Make the world grid
             int size = Config.worldSize;
             grid = new List<Entity>[size, size];
 
-
-
             // This is under the assumption that the size does not change and that it will always be a square
             for (var index0 = 0; index0 < size; index0++)
-                for (var index1 = 0; index1 < size; index1++)
-                {
-                    grid[index0, index1] = new List<Entity>();
-                }
+            for (var index1 = 0; index1 < size; index1++)
+            {
+                grid[index0, index1] = new List<Entity>();
+            }
+        }
 
+        private void InitializeEntities()
+        {
+            int size = Config.worldSize;
+            //Make the Entities
+            int amountPrey = (int)(Config.worldSize * Config.preyDensity);
+            int amountPredator = (int)(Config.worldSize * Config.preditorDensity);
+
+            for (int i = 0; i < amountPrey; i++)
+            {
+                AddPrey(rnd.Next(size), rnd.Next(size));
+            }
+
+            for (int i = 0; i < amountPredator; i++)
+            {
+                AddPredator(rnd.Next(size), rnd.Next(size));
+            }
         }
 
 
@@ -55,7 +63,9 @@ namespace Project1
         /// </summary>
         public void AddPrey(int x, int y)
         {
-            prey.Add(new Prey(this));
+            Prey newPrey = new Prey(this, x, y);
+            entities.Add(newPrey);
+            prey.Add(newPrey);
         }
 
 
@@ -64,26 +74,22 @@ namespace Project1
         /// </summary>
         public void AddPredator(int x, int y)
         {
-            predators.Add(new Predator(this));
+            Predator newPredator = new Predator(this, x, y);
+            entities.Add(newPredator);
+            predators.Add(newPredator);
         }
 
-        public Predator GetRandomPredator()
+        public Entity GetRandomEntity()
         {
-            return predators[rnd.Next(predators.Count)];
+            return entities.ElementAt(rnd.Next(entities.Count));
         }
 
-        public Prey GetRandomPrey()
-        {
-            return prey[rnd.Next(prey.Count)];
-        }
-
-        void MoveEntity(Entity entity, int x, int y)
+        public void MoveEntity(Entity entity, int x, int y)
         {
             grid[entity.x, entity.y].Remove(entity);
             grid[x, y].Add(entity);
 
-            entity.Move(x, y);
-
+            entity.ChangeLocation(x, y);
         }
 
         public void RemoveEntity(Entity e)
@@ -91,8 +97,42 @@ namespace Project1
             entities.Remove(e);
         }
 
+        public void RemovePredator(Predator p)
+        {
+            RemoveEntity(p);
+            predators.Remove(p);
+        }
+
+        public void RemovePrey(Prey p)
+        {
+            RemoveEntity(p);
+            prey.Remove(p);
+        }
+
+        /// <summary>
+        /// Get all prey that is on the specified location
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public List<Entity> PreyOnLocation(int x, int y)
+        {
+            if (IsWithinGrid(x, y))
+            {
+                return grid[x, y].FindAll((entity => entity is Prey));
+            }
+            return new List<Entity>();
+        }
+
+        private bool IsWithinGrid(int x, int y)
+        {
+            return x >= 0 && x < Config.worldSize && y >= 0 && y < Config.worldSize;
+        }
+
         public int AmountOfPredators => predators.Count;
 
         public int AmountOfPrey => prey.Count;
+
+        public int AmountOfEntities => entities.Count;
     }
 }

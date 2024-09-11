@@ -10,13 +10,33 @@ namespace Project1
     {
         private World _world;
 
-        void Round()
+        public static void Main()
         {
-            Entity entity;
-            for (int i = 0; i < _world.AmountOfEntities; i++)
-            {
-                entity = _world.GetRandomEntity();
+            Simulation s = new Simulation();
+            s.Initialize();
+            s.Run();
+        }
 
+        private void Initialize()
+        {
+            _world = new World();
+        }
+
+        private void Run()
+        {
+            for (int i = 0; i < Config.amountOfRounds; i++)
+            {
+                Round();
+            }
+        }
+
+        private void Round()
+        {
+            int amountOfEntities = _world.AmountOfEntities;
+            for (int i = 0; i < amountOfEntities; i++)
+            {
+                Entity entity = _world.GetRandomEntity();
+                entity.AttemptActions();
             }
         }
     }
