@@ -17,8 +17,6 @@ namespace Project1
             {
                 entity = _world.GetRandomEntity();
 
-
-
             }
         }
     }

@@ -8,13 +8,16 @@ namespace Project1
 {
     public class World
     {
-        Random rnd = new Random();
+        public Random rnd { get; private set; }
 
         List<Entity>[,] grid;
-        List<Entity> entities = new List<Entity>();
+        List<Predator> predators = new List<Predator>();
+        List<Prey> prey = new List<Prey>();
 
         public World()
         {
+            rnd = new Random();
+
             //Make the Entities
             int amountPrey = (int)(Config.worldSize * Config.preyDensity);
             int amountPreditor = (int)(Config.worldSize * Config.preditorDensity);
@@ -51,7 +54,7 @@ namespace Project1
         /// </summary>
         public void AddPrey()
         {
-            entities.Add(new Prey());
+            prey.Add(new Prey());
         }
 
 
@@ -60,12 +63,17 @@ namespace Project1
         /// </summary>
         public void AddPredator()
         {
-            entities.Add(new Predator());
+            predators.Add(new Predator());
         }
 
-        public Entity GetRandomEntity()
+        public Predator GetRandomPredator()
         {
-            return entities[rnd.Next(entities.Count)];
+            return predators[rnd.Next(predators.Count)];
+        }
+
+        public Prey GetRandomPrey()
+        {
+            return prey[rnd.Next(prey.Count)];
         }
 
         void MoveEntity(Entity entity, int x, int y)
@@ -77,6 +85,8 @@ namespace Project1
 
         }
 
-        public int AmountOfEntities => entities.Count;
+        public int AmountOfPredators => predators.Count;
+
+        public int AmountOfPrey => prey.Count;
     }
 }
