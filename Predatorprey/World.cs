@@ -37,6 +37,9 @@ namespace Project1
         /// </summary>
         private HashSet<Prey> prey = new HashSet<Prey>();
 
+        // These lists contain birthed entities. They are added to the world upon round completion to 
+        // let each entity at the start of the round be selected once on average, while still having
+        // round completions. 
         private HashSet<Predator> birthedPredators = new HashSet<Predator>();
         private HashSet<Prey> birthedPrey = new HashSet<Prey>();
 

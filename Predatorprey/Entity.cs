@@ -6,14 +6,19 @@ namespace Project1
 {
     public abstract class Entity
     {
+        // the world of the simulation
         protected static World world;
+        // the same random as the worlds random
         protected static Random rnd;
 
-        protected double birthRate;
-        protected double deathRate;
-        protected double walkRate;
-
+        /// <summary>
+        /// x coordinate of the entities location
+        /// </summary>
         public int x { get; protected set; }
+
+        /// <summary>
+        /// y coordinate of the entities location
+        /// </summary>
         public int y { get; protected set; }
 
         protected Entity(World _world, int x, int y)
@@ -23,10 +28,6 @@ namespace Project1
 
             this.x = x;
             this.y = y;
-
-            this.birthRate = Config.birthRate;
-            this.deathRate = Config.deathRate;
-            this.walkRate = Config.walkRate;
         }
 
 
@@ -36,14 +37,18 @@ namespace Project1
             this.y = y;
         }
 
+        /// <summary>
+        /// Attempt the actions in order. This is done when this entity is selected.
+        /// </summary>
         public abstract void AttemptActions();
 
         /// <summary>
-        /// Attempt to move to a different location
+        /// Attempt to move to a different location.
+        /// The new location can be anywhere on the grid with an uniform chance.
         /// </summary>
         protected void AttemptWalk()
         {
-            if (Attempt.Success(rnd, walkRate))
+            if (Attempt.Success(rnd, Config.walkRate))
             {
                 int newX = rnd.Next(Config.worldSize);
                 int newY = rnd.Next(Config.worldSize);
@@ -52,19 +57,31 @@ namespace Project1
             }
         }
 
+        /// <summary>
+        /// Attempt to give birth to a new entity
+        /// </summary>
         protected void AttemptBirth()
         {
-            if (Attempt.Success(rnd, birthRate)) GiveBirth();
+            if (Attempt.Success(rnd, Config.birthRate)) GiveBirth();
         }
 
+        /// <summary>
+        /// Attempt to let this entity die
+        /// </summary>
         protected void AttemptDeath()
         {
-            if (Attempt.Success(rnd, deathRate)) Die();
+            if (Attempt.Success(rnd, Config.deathRate)) Die();
         }
 
+        /// <summary>
+        /// This method handles the process of giving birth
+        /// </summary>
         protected abstract void GiveBirth();
 
-        protected abstract void Die();
+        /// <summary>
+        /// This method lets this entity die
+        /// </summary>
+        public abstract void Die();
     }
 
     public class Predator : Entity
@@ -79,17 +96,25 @@ namespace Project1
             AttemptDeath();
         }
 
+        /// <summary>
+        /// For each prey within reach, attempt predation. Upon success, let prey die.
+        /// </summary>
         private void AttemptPredation()
         {
             foreach (Prey p in PossiblePrey())
             {
                 if (Attempt.Success(rnd, Config.predationRate))
                 {
-                    world.RemovePrey(p);
+                    p.Die();
                 }
             }
         }
 
+        /// <summary>
+        /// A list of all prey within reach. This is all prey on the same
+        /// location, or the upper, right, lower or left location to this predator.
+        /// </summary>
+        /// <returns>A list of Entities, only containing Prey which is in reach</returns>
         private List<Entity> PossiblePrey()
         {
             List<Entity> location = world.PreyOnLocation(this.x, this.y);
@@ -98,15 +123,22 @@ namespace Project1
             List<Entity> down = world.PreyOnLocation(this.x, this.y - 1);
             List<Entity> left = world.PreyOnLocation(this.x - 1, this.y);
 
+            // do not cast to a list of Prey, because this is costly and not necessary
             return location.Concat(up).Concat(right).Concat(down).Concat(left).ToList();
         } 
 
+        /// <summary>
+        /// Let the predator give birth to a new predator at the same location
+        /// </summary>
         protected override void GiveBirth()
         {
             world.AddBirthPredator(new Predator(world, this.x, this.y));
         }
 
-        protected override void Die()
+        /// <summary>
+        /// Let the predator remove itself from the world
+        /// </summary>
+        public override void Die()
         {
             world.RemovePredator(this);
         }
@@ -122,12 +154,18 @@ namespace Project1
             AttemptDeath();
         }
 
+        /// <summary>
+        /// Let the prey give birth to a new prey at the same location
+        /// </summary>
         protected override void GiveBirth()
         {
             world.AddBirthPrey(new Prey(world, this.x, this.y));
         }
 
-        protected override void Die()
+        /// <summary>
+        /// Let the prey remove itself from the world
+        /// </summary>
+        public override void Die()
         {
             world.RemovePrey(this);
         }
