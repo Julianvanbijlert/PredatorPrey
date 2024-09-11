@@ -47,9 +47,22 @@ namespace Project1
             }
         }
 
-        protected void AttemptBirth() {}
+        protected void AttemptBirth()
+        {
+            if (Attempt.Success(rnd, birthRate)) GiveBirth();
+        }
 
-        protected void AttemptDeath() {}
+        protected void AttemptDeath()
+        {
+            if (Attempt.Success(rnd, deathRate)) Die();
+        }
+
+        protected abstract void GiveBirth();
+
+        private void Die()
+        {
+            world.RemoveEntity(this);
+        }
     }
 
     public class Predator : Entity
@@ -58,7 +71,14 @@ namespace Project1
 
         public override void AttemptActions()
         {
-            throw new NotImplementedException();
+            AttemptWalk();
+            AttemptBirth();
+            AttemptDeath();
+        }
+
+        protected override void GiveBirth()
+        {
+            world.AddPredator(this.x, this.y);
         }
     }
 
@@ -70,6 +90,11 @@ namespace Project1
             AttemptWalk();
             AttemptBirth();
             AttemptDeath();
+        }
+
+        protected override void GiveBirth()
+        {
+            world.AddPrey(this.x, this.y);
         }
     }
 }

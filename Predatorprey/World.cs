@@ -13,6 +13,7 @@ namespace Project1
         List<Entity>[,] grid;
         List<Predator> predators = new List<Predator>();
         List<Prey> prey = new List<Prey>();
+        List<Entity> entities = new List<Entity>();
 
         public World()
         {
@@ -52,18 +53,18 @@ namespace Project1
         /// <summary>
         /// Adds one prey to the world
         /// </summary>
-        public void AddPrey()
+        public void AddPrey(int x, int y)
         {
-            prey.Add(new Prey());
+            prey.Add(new Prey(this));
         }
 
 
         /// <summary>
         /// Adds one preditor to the world
         /// </summary>
-        public void AddPredator()
+        public void AddPredator(int x, int y)
         {
-            predators.Add(new Predator());
+            predators.Add(new Predator(this));
         }
 
         public Predator GetRandomPredator()
@@ -83,6 +84,11 @@ namespace Project1
 
             entity.Move(x, y);
 
+        }
+
+        public void RemoveEntity(Entity e)
+        {
+            entities.Remove(e);
         }
 
         public int AmountOfPredators => predators.Count;
