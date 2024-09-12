@@ -152,14 +152,14 @@ namespace Project1
         /// <returns>A list of Entities, only containing Prey which is in reach</returns>
         private IEnumerable<Prey> PossiblePrey()
         {
-            HashSet<Prey> location = world.PreyOnLocation(this.x, this.y);
-            HashSet<Prey> up = world.PreyOnLocation(this.x, this.y + 1);
-            HashSet<Prey> right = world.PreyOnLocation(this.x + 1, this.y);
-            HashSet<Prey> down = world.PreyOnLocation(this.x, this.y - 1);
-            HashSet<Prey> left = world.PreyOnLocation(this.x - 1, this.y);
+            Prey location = world.PreyOnLocation(this.x, this.y);
+            Prey up = world.PreyOnLocation(this.x, this.y + 1);
+            Prey right = world.PreyOnLocation(this.x + 1, this.y);
+            Prey down = world.PreyOnLocation(this.x, this.y - 1);
+            Prey left = world.PreyOnLocation(this.x - 1, this.y);
 
             // do not cast to a list of Prey, because this is costly and not necessary
-            return location.Concat(up).Concat(right).Concat(down).Concat(left);
+            return new List<Prey>() {location, up, right, down, left}.FindAll((e) => e != null);
         } 
 
         /// <summary>

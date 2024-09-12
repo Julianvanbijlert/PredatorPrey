@@ -17,7 +17,7 @@ namespace Project1
         /// <summary>
         /// The 'map' of the world
         /// </summary>
-        private HashSet<Entity>[,] grid;
+        private Entity[,] grid;
 
         // Note that entities = predators ++ prey. This is to get the total
         // number of predators and prey fast. It remains to be seen if this
@@ -63,14 +63,7 @@ namespace Project1
         {
             //Make the world grid
             int size = Config.worldSize;
-            grid = new HashSet<Entity>[size, size];
-
-            // This is under the assumption that the size does not change and that it will always be a square
-            for (var index0 = 0; index0 < size; index0++)
-            for (var index1 = 0; index1 < size; index1++)
-            {
-                grid[index0, index1] = new HashSet<Entity>();
-            }
+            grid = new Entity[size, size];
         }
 
         /// <summary>
@@ -85,12 +78,14 @@ namespace Project1
 
             for (int i = 0; i < amountPrey; i++)
             {
-                AddPrey(new Prey(this, rnd.Next(size), rnd.Next(size)));
+                (int x, int y) = GetRandomEmptyLocation();
+                AddPrey(new Prey(this, x, y));
             }
 
             for (int i = 0; i < amountPredator; i++)
             {
-                AddPredator(new Predator(this, rnd.Next(size), rnd.Next(size)));
+                (int x, int y) = GetRandomEmptyLocation();
+                AddPredator(new Predator(this, x, y));
             }
         }
 
@@ -100,9 +95,11 @@ namespace Project1
         /// </summary>
         public void AddPrey(Prey p)
         {
+            if (grid[p.x, p.y] != null) throw new Exception("Entity count will exceed capacity");
+
             entities.Add(p);
             prey.Add(p);
-            grid[p.x, p.y].Add(p);
+            grid[p.x, p.y] = p;
         }
 
 
@@ -111,9 +108,11 @@ namespace Project1
         /// </summary>
         public void AddPredator(Predator p)
         {
+            if (grid[p.x, p.y] != null) throw new Exception("Entity count will exceed capacity");
+
             entities.Add(p);
             predators.Add(p);
-            grid[p.x, p.y].Add(p);
+            grid[p.x, p.y] = p;
         }
 
         /// <summary>
@@ -133,8 +132,8 @@ namespace Project1
         /// <param name="y">The new y coordinate</param>
         public void MoveEntity(Entity entity, int x, int y)
         {
-            grid[entity.x, entity.y].Remove(entity);
-            grid[x, y].Add(entity);
+            grid[entity.x, entity.y] = null;
+            grid[x, y] = entity;
 
             entity.ChangeLocation(x, y);
         }
@@ -144,7 +143,7 @@ namespace Project1
         /// </summary>
         public void RemoveEntity(Entity e)
         {
-            grid[e.x, e.y].Remove(e);
+            grid[e.x, e.y] = null;
             entities.Remove(e);
         }
 
@@ -169,24 +168,20 @@ namespace Project1
         }
 
         /// <summary>
-        /// Get all prey that is on the specified location
+        /// Get the prey that is on the specified location, if any
         /// </summary>
         /// <param name="x">x coordinate of the location</param>
         /// <param name="y">y coordinate of the location</param>
         /// <returns>The list of all prey on the location as Entities, because
         /// casting to Prey is costly and not necessary</returns>
-        public HashSet<Prey> PreyOnLocation(int x, int y)
+        public Prey PreyOnLocation(int x, int y)
         {
             if (IsWithinGrid(x, y))
             {
-                HashSet<Entity> result = new HashSet<Entity>();
-                foreach (Entity e in grid[x, y])
-                {
-                    Prey p = e as Prey;
-                    if (p != null) result.Add(p);
-                }
+                // will return null if grid[x, y] is empty or not Prey
+                return grid[x, y] as Prey;
             }
-            return new HashSet<Prey>();
+            return null;
         }
 
         /// <summary>
@@ -238,6 +233,18 @@ namespace Project1
             birthedPrey.Clear();
         }
 
+        public (int, int) GetRandomEmptyLocation()
+        {
+            int x, y;
+            do
+            {
+                x = rnd.Next(Config.worldSize);
+                y = rnd.Next(Config.worldSize);
+            } while (grid[x, y] != null);
+
+            return (x, y);
+        }
+
         /// <summary>
         /// The amount of predators currently active in the world.
         /// Birthed predators do not count yet.
@@ -271,7 +278,7 @@ namespace Project1
             {
                 for (int y = 0; y < Config.worldSize; y++)
                 {
-                    sum += grid[x, y].Count;
+                    if (grid[x, y] != null) sum++;
                 }
             }
 
@@ -279,7 +286,7 @@ namespace Project1
         }
 
 
-        public HashSet<Entity>[,] GetGrid => grid;
+        public Entity[,] GetGrid => grid;
 
         public HashSet<Entity> GetEntities => entities;
     }

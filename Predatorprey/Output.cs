@@ -14,7 +14,7 @@ namespace Project1
             //Entities per set gridsize
 
             //Console.Clear();
-            HashSet<Entity>[,] grid = world.GetGrid;
+            Entity[,] grid = world.GetGrid;
             Console.WriteLine("Entities: " + world.AmountOfEntities);
             Console.WriteLine("Predators: " + world.AmountOfPredators);
             Console.WriteLine("Prey: " + world.AmountOfPrey);
@@ -23,7 +23,7 @@ namespace Project1
            
         }
 
-        public static void PrintGrid(HashSet<Entity>[,] grid)
+        public static void PrintGrid(Entity[,] grid)
         {
             int amountOfEntities = 0;
 
@@ -31,7 +31,7 @@ namespace Project1
             {
                 for (int x = 0; x < Config.worldSize; x++)
                 {
-                    amountOfEntities += grid[x, y].Count;
+                    if (grid[x, y] != null) amountOfEntities++;
                     if (x % Config.BlockSize == 0)
                     {
                         Console.Write("|" + amountOfEntities + "|");
