@@ -55,14 +55,6 @@ namespace Project1
             }
         }
 
-        /// <summary>
-        /// Attempt to give birth to a new entity
-        /// </summary>
-        protected void AttemptBirth()
-        {
-            if (Attempt.Success(rnd, Config.birthRate)) world.AddBirthingEntity(this);
-        }
-
         // Get a random location to birth a new entity on
         protected (int, int)? GetBirthLocation()
         {
@@ -91,14 +83,6 @@ namespace Project1
         }
 
         /// <summary>
-        /// Attempt to let this entity die
-        /// </summary>
-        protected void AttemptDeath()
-        {
-            if (Attempt.Success(rnd, Config.deathRate)) Die();
-        }
-
-        /// <summary>
         /// This method handles the process of giving birth
         /// </summary>
         public abstract void GiveBirth();
@@ -117,7 +101,6 @@ namespace Project1
         {
             AttemptPredation();
             AttemptWalk();
-            AttemptBirth();
             AttemptDeath();
         }
 
@@ -130,9 +113,20 @@ namespace Project1
             {
                 if (Attempt.Success(rnd, Config.predationRate))
                 {
-                    p.Die();
+                    Predation(p);
                 }
             }
+        }
+
+        /// <summary>
+        /// Do predation on a prey p
+        /// </summary>
+        /// <param name="p">The prey to kill</param>
+        private void Predation(Prey p)
+        {
+            // kill Prey and add new Predator
+            p.Die();
+            world.AddBirthingEntity(this);
         }
 
         /// <summary>
@@ -150,7 +144,15 @@ namespace Project1
 
             // do not cast to a list of Prey, because this is costly and not necessary
             return new List<Prey>() {location, up, right, down, left}.FindAll((e) => e != null);
-        } 
+        }
+
+        /// <summary>
+        /// Attempt to let this entity die
+        /// </summary>
+        protected void AttemptDeath()
+        {
+            if (Attempt.Success(rnd, Config.deathRate)) Die();
+        }
 
         /// <summary>
         /// Let the predator give birth to a new predator at a random birth location
@@ -175,11 +177,11 @@ namespace Project1
     public class Prey : Entity
     {
         public Prey(World world, int x, int y) : base(world, x, y){ }
+
         public override void AttemptActions()
         {
             AttemptWalk();
             AttemptBirth();
-            AttemptDeath();
         }
 
         /// <summary>
@@ -191,6 +193,14 @@ namespace Project1
             if (!location.HasValue) return;
             (int birthX, int birthY) = location.Value;
             world.AddPrey(new Prey(world, birthX, birthY));
+        }
+
+        /// <summary>
+        /// Attempt to give birth to a new entity
+        /// </summary>
+        protected void AttemptBirth()
+        {
+            if (Attempt.Success(rnd, Config.birthRate)) world.AddBirthingEntity(this);
         }
 
         /// <summary>
