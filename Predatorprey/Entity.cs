@@ -154,7 +154,8 @@ namespace Project1
         /// </summary>
         protected override void GiveBirth()
         {
-            world.AddBirthPredator(new Predator(world, this.x, this.y));
+            (int newX, int newY) = GetBirthLocation();
+            world.AddBirthPredator(new Predator(world, newX, newY));
         }
 
         /// <summary>
@@ -181,7 +182,8 @@ namespace Project1
         /// </summary>
         protected override void GiveBirth()
         {
-            world.AddBirthPrey(new Prey(world, this.x, this.y));
+            (int newX, int newY) = GetBirthLocation();
+            world.AddBirthPrey(new Prey(world, newX, newY));
         }
 
         /// <summary>
