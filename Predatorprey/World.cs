@@ -102,6 +102,7 @@ namespace Project1
         {
             entities.Add(p);
             prey.Add(p);
+            grid[p.x, p.y].Add(p);
         }
 
 
@@ -112,6 +113,7 @@ namespace Project1
         {
             entities.Add(p);
             predators.Add(p);
+            grid[p.x, p.y].Add(p);
         }
 
         /// <summary>
@@ -142,6 +144,7 @@ namespace Project1
         /// </summary>
         public void RemoveEntity(Entity e)
         {
+            grid[e.x, e.y].Remove(e);
             entities.Remove(e);
         }
 
@@ -186,7 +189,7 @@ namespace Project1
         /// </summary>
         /// <param name="x">The x of the queried location</param>
         /// <param name="y">The y of the queried location</param>
-        private bool IsWithinGrid(int x, int y)
+        public bool IsWithinGrid(int x, int y)
         {
             return x >= 0 && x < Config.worldSize && y >= 0 && y < Config.worldSize;
         }

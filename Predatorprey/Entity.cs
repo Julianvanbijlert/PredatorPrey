@@ -75,16 +75,29 @@ namespace Project1
             // 4: left
             int relativeLocation = rnd.Next(5);
 
+            int birthX = this.x; int birthY = this.y;
+
             switch (relativeLocation)
             {
-                case 0: return (this.x, this.y);
-                case 1: return (this.x, this.y + 1);
-                case 2: return (this.x + 1, this.y);
-                case 3: return (this.x, this.y - 1);
-                case 4: return (this.x - 1, this.y);
+                case 1:
+                    birthX = this.x; birthY = this.y + 1;
+                    break;
+                case 2:
+                    birthX = this.x + 1; birthY = this.y;
+                    break;
+                case 3:
+                    birthX = this.x; birthY = this.y - 1;
+                    break;
+                case 4:
+                    birthX = this.x - 1; birthY = this.y;
+                    break;
             }
 
-            throw new Exception("Something went wrong while choosing birth location");
+            // check whether the birth coordinates are inside the grid
+            // choose new coordinates if not
+            if (!world.IsWithinGrid(birthX, birthY)) return GetBirthLocation() ;
+
+            return (birthX, birthY);
         }
 
         /// <summary>
