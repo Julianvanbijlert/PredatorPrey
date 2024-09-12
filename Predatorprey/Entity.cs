@@ -65,6 +65,28 @@ namespace Project1
             if (Attempt.Success(rnd, Config.birthRate)) GiveBirth();
         }
 
+        // Get a random location to birth a new entity on
+        protected (int, int) GetBirthLocation()
+        {
+            // 0: same location
+            // 1: up
+            // 2: right
+            // 3: down
+            // 4: left
+            int relativeLocation = rnd.Next(5);
+
+            switch (relativeLocation)
+            {
+                case 0: return (this.x, this.y);
+                case 1: return (this.x, this.y + 1);
+                case 2: return (this.x + 1, this.y);
+                case 3: return (this.x, this.y - 1);
+                case 4: return (this.x - 1, this.y);
+            }
+
+            throw new Exception("Something went wrong while choosing birth location");
+        }
+
         /// <summary>
         /// Attempt to let this entity die
         /// </summary>
