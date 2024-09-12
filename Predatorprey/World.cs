@@ -253,6 +253,26 @@ namespace Project1
         /// </summary>
         public int AmountOfEntities => entities.Count;
 
+        /// <summary>
+        /// Calculates the amount of entities in the grid. This must match
+        /// with the amount of AmountOfEntities. Use this method for debugging.
+        /// </summary>
+        /// <returns>The total amount of entities in the grid</returns>
+        public int CalculateEntitiesInGrid()
+        {
+            int sum = 0;
+
+            for (int x = 0; x < Config.worldSize; x++)
+            {
+                for (int y = 0; y < Config.worldSize; y++)
+                {
+                    sum += grid[x, y].Count;
+                }
+            }
+
+            return sum;
+        }
+
 
         public List<Entity>[,] GetGrid => grid;
 
