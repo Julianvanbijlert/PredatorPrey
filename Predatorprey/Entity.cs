@@ -60,42 +60,34 @@ namespace Project1
         /// </summary>
         protected void AttemptBirth()
         {
-            if (Attempt.Success(rnd, Config.birthRate)) GiveBirth();
+            if (Attempt.Success(rnd, Config.birthRate)) world.AddBirthingEntity(this);
         }
 
         // Get a random location to birth a new entity on
-        protected (int, int) GetBirthLocation()
+        protected (int, int)? GetBirthLocation()
         {
-            // 0: same location
-            // 1: up
-            // 2: right
-            // 3: down
-            // 4: left
-            int relativeLocation = rnd.Next(5);
+            // make a list of available locations
+            List<(int, int)> availableLocations = new List<(int, int)>(4);
+            // up
+            AddBirthLocationIfAvailable(availableLocations, this.x, this.y + 1);
+            // right
+            AddBirthLocationIfAvailable(availableLocations, this.x + 1, this.y);
+            // down
+            AddBirthLocationIfAvailable(availableLocations, this.x, this.y - 1);
+            // left
+            AddBirthLocationIfAvailable(availableLocations, this.x - 1, this.y);
 
-            int birthX = this.x; int birthY = this.y;
+            // choose one randomly
+            if(availableLocations.Count > 0)
+                return availableLocations[rnd.Next(availableLocations.Count)];
 
-            switch (relativeLocation)
-            {
-                case 1:
-                    birthX = this.x; birthY = this.y + 1;
-                    break;
-                case 2:
-                    birthX = this.x + 1; birthY = this.y;
-                    break;
-                case 3:
-                    birthX = this.x; birthY = this.y - 1;
-                    break;
-                case 4:
-                    birthX = this.x - 1; birthY = this.y;
-                    break;
-            }
+            return null;
+        }
 
-            // check whether the birth coordinates are inside the grid
-            // choose new coordinates if not
-            if (!world.IsWithinGrid(birthX, birthY)) return GetBirthLocation() ;
-
-            return (birthX, birthY);
+        private void AddBirthLocationIfAvailable(List<(int, int)> available, int x, int y)
+        {
+            if (world.IsAvailableLocation(x, y))
+                available.Add((x, y));
         }
 
         /// <summary>
@@ -109,7 +101,7 @@ namespace Project1
         /// <summary>
         /// This method handles the process of giving birth
         /// </summary>
-        protected abstract void GiveBirth();
+        public abstract void GiveBirth();
 
         /// <summary>
         /// This method lets this entity die
@@ -161,12 +153,14 @@ namespace Project1
         } 
 
         /// <summary>
-        /// Let the predator give birth to a new predator at the same location
+        /// Let the predator give birth to a new predator at a random birth location
         /// </summary>
-        protected override void GiveBirth()
+        public override void GiveBirth()
         {
-            (int newX, int newY) = GetBirthLocation();
-            world.AddBirthPredator(new Predator(world, newX, newY));
+            (int, int)? location = GetBirthLocation();
+            if (!location.HasValue) return;
+            (int birthX, int birthY) = location.Value;
+            world.AddPredator(new Predator(world, birthX, birthY));
         }
 
         /// <summary>
@@ -189,12 +183,14 @@ namespace Project1
         }
 
         /// <summary>
-        /// Let the prey give birth to a new prey at the same location
+        /// Let the prey give birth to a new prey at a random birth location
         /// </summary>
-        protected override void GiveBirth()
+        public override void GiveBirth()
         {
-            (int newX, int newY) = GetBirthLocation();
-            world.AddBirthPrey(new Prey(world, newX, newY));
+            (int, int)? location = GetBirthLocation();
+            if (!location.HasValue) return;
+            (int birthX, int birthY) = location.Value;
+            world.AddPrey(new Prey(world, birthX, birthY));
         }
 
         /// <summary>

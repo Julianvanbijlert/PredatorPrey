@@ -56,12 +56,12 @@ namespace Project1
             }
 
             // add birthed entities to the world
-            _world.ReleaseBirthedEntities();
+            _world.ReleaseBirthingEntities();
 
             // print the world
-            //Output.PrintWorld(_world);
+            Output.PrintWorld(_world);
 
-            Output.PrintList(_world);
+            //Output.PrintList(_world);
         }
     }
 }

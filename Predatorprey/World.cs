@@ -40,8 +40,7 @@ namespace Project1
         // These lists contain birthed entities. They are added to the world upon round completion to 
         // let each entity at the start of the round be selected once on average, while still having
         // round completions. 
-        private HashSet<Predator> birthedPredators = new HashSet<Predator>();
-        private HashSet<Prey> birthedPrey = new HashSet<Prey>();
+        private List<Entity> birthingEntities = new List<Entity>();
 
         /// <summary>
         /// Represents the world with a grid and the entities on it.
@@ -71,7 +70,6 @@ namespace Project1
         /// </summary>
         private void InitializeEntities()
         {
-            int size = Config.worldSize;
             //Make the Entities
             int amountPrey = (int)(Config.worldSize * Config.worldSize * Config.preyDensity);
             int amountPredator = (int)(Config.worldSize * Config.worldSize * Config.preditorDensity);
@@ -95,7 +93,7 @@ namespace Project1
         /// </summary>
         public void AddPrey(Prey p)
         {
-            if (grid[p.x, p.y] != null) throw new Exception("Entity count will exceed capacity");
+            if (grid[p.x, p.y] != null && grid[p.x, p.y] != p) throw new Exception("Entity count will exceed capacity");
 
             entities.Add(p);
             prey.Add(p);
@@ -108,7 +106,7 @@ namespace Project1
         /// </summary>
         public void AddPredator(Predator p)
         {
-            if (grid[p.x, p.y] != null) throw new Exception("Entity count will exceed capacity");
+            if (grid[p.x, p.y] != null && grid[p.x, p.y] != p) throw new Exception("Entity count will exceed capacity");
 
             entities.Add(p);
             predators.Add(p);
@@ -187,6 +185,17 @@ namespace Project1
         }
 
         /// <summary>
+        /// Return whether the given location is available for an Entity
+        /// </summary>
+        /// <param name="x">The x coordinate of the queried location</param>
+        /// <param name="y">The x coordinate of the queried location</param>
+        /// <returns>True if the location is available for the Entity, otherwise false</returns>
+        public bool IsAvailableLocation(int x, int y)
+        {
+            return IsWithinGrid(x, y) && grid[x, y] == null;
+        }
+
+        /// <summary>
         /// Return whether a location is on the grid
         /// </summary>
         /// <param name="x">The x of the queried location</param>
@@ -197,42 +206,24 @@ namespace Project1
         }
 
         /// <summary>
-        /// Add a predator to the list of birthed predators
+        /// Add an entity to the list of birthing entities
         /// </summary>
-        /// <param name="p">The predator to add to the list of
-        /// birthed predators</param>
-        public void AddBirthPredator(Predator p)
+        /// <param name="p">The entity to add to the list of
+        /// birthing entities</param>
+        public void AddBirthingEntity(Entity e)
         {
-            birthedPredators.Add(p);
-        }
-
-        /// <summary>
-        /// Add a prey to the list of birthed prey
-        /// </summary>
-        /// <param name="p">The prey to add to the list of
-        /// birthed prey</param>
-        public void AddBirthPrey(Prey p)
-        {
-            birthedPrey.Add(p);
+            birthingEntities.Add(e);
         }
 
         /// <summary>
         /// Set all birthed Entities in the world and empty the birth lists
         /// </summary>
-        public void ReleaseBirthedEntities()
+        public void ReleaseBirthingEntities()
         {
-            foreach (Predator p in birthedPredators)
+            foreach (Entity e in birthingEntities)
             {
-                AddPredator(p);
+                e.GiveBirth();
             }
-
-            foreach (Prey p in birthedPrey)
-            {
-                AddPrey(p);
-            }
-
-            birthedPredators.Clear();
-            birthedPrey.Clear();
         }
 
         public (int, int) GetRandomEmptyLocation()
