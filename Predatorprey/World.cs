@@ -132,6 +132,8 @@ namespace Project1
         /// <param name="y">The new y coordinate</param>
         public void MoveEntity(Entity entity, int x, int y)
         {
+            if (grid[x, y] != null) throw new Exception("Location capacity would be exceeded");
+
             grid[entity.x, entity.y] = null;
             grid[x, y] = entity;
 

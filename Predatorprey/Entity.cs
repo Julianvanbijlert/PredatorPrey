@@ -50,9 +50,7 @@ namespace Project1
         {
             if (Attempt.Success(rnd, Config.walkRate))
             {
-                int newX = rnd.Next(Config.worldSize);
-                int newY = rnd.Next(Config.worldSize);
-
+                (int newX, int newY) = world.GetRandomEmptyLocation();
                 world.MoveEntity(this, newX, newY);
             }
         }
