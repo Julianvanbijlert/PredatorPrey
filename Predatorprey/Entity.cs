@@ -7,7 +7,7 @@ namespace Project1
     public abstract class Entity
     {
         // the world of the simulation
-        protected static World world;
+        public static World world { protected get; set; }
         // the same random as the worlds random
         protected static Random rnd;
 
@@ -21,9 +21,8 @@ namespace Project1
         /// </summary>
         public int y { get; protected set; }
 
-        protected Entity(World _world, int x, int y)
+        protected Entity(int x, int y)
         {
-            world = _world;
             rnd = world.rnd;
 
             this.x = x;
@@ -95,7 +94,7 @@ namespace Project1
 
     public class Predator : Entity
     {
-        public Predator(World world, int x, int y) : base(world, x, y){ }
+        public Predator(int x, int y) : base(x, y){ }
 
         public override void AttemptActions()
         {
@@ -162,7 +161,7 @@ namespace Project1
             (int, int)? location = GetBirthLocation();
             if (!location.HasValue) return;
             (int birthX, int birthY) = location.Value;
-            world.AddPredator(new Predator(world, birthX, birthY));
+            world.AddPredator(new Predator(birthX, birthY));
         }
 
         /// <summary>
@@ -176,7 +175,7 @@ namespace Project1
 
     public class Prey : Entity
     {
-        public Prey(World world, int x, int y) : base(world, x, y){ }
+        public Prey(int x, int y) : base(x, y){ }
 
         public override void AttemptActions()
         {
@@ -192,7 +191,7 @@ namespace Project1
             (int, int)? location = GetBirthLocation();
             if (!location.HasValue) return;
             (int birthX, int birthY) = location.Value;
-            world.AddPrey(new Prey(world, birthX, birthY));
+            world.AddPrey(new Prey(birthX, birthY));
         }
 
         /// <summary>

@@ -71,6 +71,9 @@ namespace Project1
         /// </summary>
         private void InitializeEntities()
         {
+            // pass itself to the entities static 'world' variable
+            Entity.world = this;
+
             //Make the Entities
             int amountPrey = (int)(Config.worldSize * Config.worldSize * Config.preyDensity);
             int amountPredator = (int)(Config.worldSize * Config.worldSize * Config.preditorDensity);
@@ -78,13 +81,13 @@ namespace Project1
             for (int i = 0; i < amountPrey; i++)
             {
                 (int x, int y) = GetRandomEmptyLocation();
-                AddPrey(new Prey(this, x, y));
+                AddPrey(new Prey(x, y));
             }
 
             for (int i = 0; i < amountPredator; i++)
             {
                 (int x, int y) = GetRandomEmptyLocation();
-                AddPredator(new Predator(this, x, y));
+                AddPredator(new Predator(x, y));
             }
         }
 

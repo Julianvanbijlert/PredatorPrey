@@ -8,7 +8,7 @@ namespace Project1
 { 
     public struct Config
     {
-        public const int worldSize = 512;
+        public const int worldSize = 128;
 
         public const double deathRate = 0.025;
         public const double birthRate = 1;
