@@ -17,7 +17,7 @@ namespace Project1
         /// <summary>
         /// The 'map' of the world
         /// </summary>
-        private List<Entity>[,] grid;
+        private HashSet<Entity>[,] grid;
 
         // Note that entities = predators ++ prey. This is to get the total
         // number of predators and prey fast. It remains to be seen if this
@@ -49,7 +49,7 @@ namespace Project1
         /// </summary>
         public World()
         {
-            rnd = new Random();
+            rnd = new Random(201);
 
             InitializeGrid();
 
@@ -63,13 +63,13 @@ namespace Project1
         {
             //Make the world grid
             int size = Config.worldSize;
-            grid = new List<Entity>[size, size];
+            grid = new HashSet<Entity>[size, size];
 
             // This is under the assumption that the size does not change and that it will always be a square
             for (var index0 = 0; index0 < size; index0++)
             for (var index1 = 0; index1 < size; index1++)
             {
-                grid[index0, index1] = new List<Entity>();
+                grid[index0, index1] = new HashSet<Entity>();
             }
         }
 
@@ -175,13 +175,18 @@ namespace Project1
         /// <param name="y">y coordinate of the location</param>
         /// <returns>The list of all prey on the location as Entities, because
         /// casting to Prey is costly and not necessary</returns>
-        public List<Entity> PreyOnLocation(int x, int y)
+        public HashSet<Prey> PreyOnLocation(int x, int y)
         {
             if (IsWithinGrid(x, y))
             {
-                return grid[x, y].FindAll((entity => entity is Prey));
+                HashSet<Entity> result = new HashSet<Entity>();
+                foreach (Entity e in grid[x, y])
+                {
+                    Prey p = e as Prey;
+                    if (p != null) result.Add(p);
+                }
             }
-            return new List<Entity>();
+            return new HashSet<Prey>();
         }
 
         /// <summary>
@@ -274,7 +279,7 @@ namespace Project1
         }
 
 
-        public List<Entity>[,] GetGrid => grid;
+        public HashSet<Entity>[,] GetGrid => grid;
 
         public HashSet<Entity> GetEntities => entities;
     }

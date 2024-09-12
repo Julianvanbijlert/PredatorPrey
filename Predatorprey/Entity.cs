@@ -150,16 +150,16 @@ namespace Project1
         /// location, or the upper, right, lower or left location to this predator.
         /// </summary>
         /// <returns>A list of Entities, only containing Prey which is in reach</returns>
-        private List<Entity> PossiblePrey()
+        private IEnumerable<Prey> PossiblePrey()
         {
-            List<Entity> location = world.PreyOnLocation(this.x, this.y);
-            List<Entity> up = world.PreyOnLocation(this.x, this.y + 1);
-            List<Entity> right = world.PreyOnLocation(this.x + 1, this.y);
-            List<Entity> down = world.PreyOnLocation(this.x, this.y - 1);
-            List<Entity> left = world.PreyOnLocation(this.x - 1, this.y);
+            HashSet<Prey> location = world.PreyOnLocation(this.x, this.y);
+            HashSet<Prey> up = world.PreyOnLocation(this.x, this.y + 1);
+            HashSet<Prey> right = world.PreyOnLocation(this.x + 1, this.y);
+            HashSet<Prey> down = world.PreyOnLocation(this.x, this.y - 1);
+            HashSet<Prey> left = world.PreyOnLocation(this.x - 1, this.y);
 
             // do not cast to a list of Prey, because this is costly and not necessary
-            return location.Concat(up).Concat(right).Concat(down).Concat(left).ToList();
+            return location.Concat(up).Concat(right).Concat(down).Concat(left);
         } 
 
         /// <summary>
