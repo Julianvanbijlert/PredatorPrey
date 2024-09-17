@@ -60,8 +60,9 @@ namespace Project1
 
             // print the world
             Output.PrintWorld(_world);
-
             //Output.PrintList(_world);
+
+            _world.PrintStats();
         }
     }
 }

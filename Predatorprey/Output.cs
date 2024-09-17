@@ -13,11 +13,9 @@ namespace Project1
         {
             //Entities per set gridsize
 
-            //Console.Clear();
+            Console.Clear();
             Entity[,] grid = world.GetGrid;
-            Console.WriteLine("Entities: " + world.AmountOfEntities);
-            Console.WriteLine("Predators: " + world.AmountOfPredators);
-            Console.WriteLine("Prey: " + world.AmountOfPrey);
+            world.PrintStats();
 
             PrintGrid(grid);
            
@@ -25,22 +23,46 @@ namespace Project1
 
         public static void PrintGrid(Entity[,] grid)
         {
-            int amountOfEntities = 0;
+
+            Console.Clear();
+
+            int tempAmountOfEntities = 0;
+            int[] countArray = new int[Config.worldSize / Config.BlockSize + 1]; //+1 for the last block
 
             for (int y = 0; y < Config.worldSize; y++)
             {
                 for (int x = 0; x < Config.worldSize; x++)
                 {
-                    if (grid[x, y] != null) amountOfEntities++;
+
+                    //checks if there is an entity on the grid
+                    if(grid[x, y] != null)
+                        tempAmountOfEntities++; 
+                    
+
+
                     if (x % Config.BlockSize == 0)
                     {
-                        Console.Write("|" + amountOfEntities + "|");
-                        amountOfEntities = 0;
+                        //collect entities in blocks
+                        int pointer = x / Config.BlockSize;
+                        countArray[pointer] += tempAmountOfEntities;
+                        tempAmountOfEntities = 0;
+
+                        if (y % Config.BlockSize == 0)
+                        {
+                            //print the amount of entities in the block
+                            Console.Write("|" + countArray[pointer] + "|");
+                            countArray[pointer] = 0;
+
+                            //make sure the gris is "square"
+                            if(pointer == Config.worldSize / Config.BlockSize)
+                                Console.WriteLine();    
+
+
+                        }
                     }
 
                 }
 
-                Console.WriteLine();
             }
         }
 

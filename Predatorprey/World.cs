@@ -242,6 +242,68 @@ namespace Project1
             return (x, y);
         }
 
+        public (int, int) GetLocationNext(int x, int y)
+        {
+            //get all locations around the current location that are not off the board
+            List<(int, int)> availableLocations = GetAvailableLocations(x, y);
+
+
+            //remove locations that are not available, this is easily changed when we add more entities per location allowed
+            for (int i = 0; i < availableLocations.Count; i++)
+            {
+                if (grid[availableLocations[i].Item1, availableLocations[i].Item2] != null)
+                {
+                    availableLocations.RemoveAt(i);
+                }
+            }
+
+            //pick one of the locations randomly
+            if(availableLocations.Count > 0)
+                return availableLocations[rnd.Next(availableLocations.Count)];  
+            
+
+            //no squares around the current location are available
+            return (x, y);
+
+        }
+
+        /// <summary>
+        /// Get all locations around the current location that are not off the board.
+        /// Could be changed into only up, down, left, right
+        /// </summary>
+        private List<(int, int)> GetAvailableLocations(int x, int y)
+        {
+            int newx, newy;
+
+            List<(int, int)> availableLocations = new List<(int, int)>();
+
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    newy = y + i;
+                    newx = x + j;
+
+                    if (IsWithinGrid(newx, newy))
+                    {
+                        availableLocations.Add((newx, newy));
+                    }
+                }
+            }
+            return availableLocations;
+        }
+
+        /// <summary>
+        /// Prints the amount of entities, predators and prey in the world
+        /// </summary>
+        public void PrintStats()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Entities: " + AmountOfEntities);
+            Console.WriteLine("Predators: " + AmountOfPredators);
+            Console.WriteLine("Prey: " + AmountOfPrey);
+        }
+
         /// <summary>
         /// The amount of predators currently active in the world.
         /// Birthed predators do not count yet.

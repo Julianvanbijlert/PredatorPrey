@@ -49,7 +49,7 @@ namespace Project1
         {
             if (Attempt.Success(rnd, Config.walkRate))
             {
-                (int newX, int newY) = world.GetRandomEmptyLocation();
+                (int newX, int newY) = world.GetLocationNext(x, y);
                 world.MoveEntity(this, newX, newY);
             }
         }
