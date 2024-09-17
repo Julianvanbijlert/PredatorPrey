@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Project1
 {
@@ -29,6 +30,8 @@ namespace Project1
             this.y = y;
         }
 
+        
+
 
         public void ChangeLocation(int x, int y)
         {
@@ -49,7 +52,9 @@ namespace Project1
         {
             if (Attempt.Success(rnd, Config.walkRate))
             {
+                
                 (int newX, int newY) = world.GetLocationNext(x, y);
+
                 world.MoveEntity(this, newX, newY);
             }
         }
@@ -95,6 +100,7 @@ namespace Project1
     public class Predator : Entity
     {
         public Predator(int x, int y) : base(x, y){ }
+        
 
         public override void AttemptActions()
         {
@@ -144,6 +150,8 @@ namespace Project1
             // do not cast to a list of Prey, because this is costly and not necessary
             return new List<Prey>() {location, up, right, down, left}.FindAll((e) => e != null);
         }
+
+       
 
         /// <summary>
         /// Attempt to let this entity die

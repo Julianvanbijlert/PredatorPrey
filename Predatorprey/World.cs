@@ -134,9 +134,10 @@ namespace Project1
         /// <param name="y">The new y coordinate</param>
         public void MoveEntity(Entity entity, int x, int y)
         {
+            grid[entity.x, entity.y] = null;
+
             if (grid[x, y] != null) throw new Exception("Location capacity would be exceeded");
 
-            grid[entity.x, entity.y] = null;
             grid[x, y] = entity;
 
             entity.ChangeLocation(x, y);
@@ -247,16 +248,6 @@ namespace Project1
             //get all locations around the current location that are not off the board
             List<(int, int)> availableLocations = GetAvailableLocations(x, y);
 
-
-            //remove locations that are not available, this is easily changed when we add more entities per location allowed
-            for (int i = 0; i < availableLocations.Count; i++)
-            {
-                if (grid[availableLocations[i].Item1, availableLocations[i].Item2] != null)
-                {
-                    availableLocations.RemoveAt(i);
-                }
-            }
-
             //pick one of the locations randomly
             if(availableLocations.Count > 0)
                 return availableLocations[rnd.Next(availableLocations.Count)];  
@@ -287,7 +278,7 @@ namespace Project1
                     newy = y + i;
                     newx = x + j;
 
-                    if (IsWithinGrid(newx, newy))
+                    if (IsAvailableLocation(newx, newy))
                     {
                         availableLocations.Add((newx, newy));
                     }
