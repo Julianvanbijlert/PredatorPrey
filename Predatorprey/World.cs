@@ -274,12 +274,15 @@ namespace Project1
         private List<(int, int)> GetAvailableLocations(int x, int y)
         {
             int newx, newy;
+            //how far the entity can walk
+            int dist = Config.walkDistance;
 
             List<(int, int)> availableLocations = new List<(int, int)>();
 
-            for (int i = -1; i <= 1; i++)
+
+            for (int i = -dist; i <= dist; i++)
             {
-                for (int j = -1; j <= 1; j++)
+                for (int j = -dist; j <= dist; j++)
                 {
                     newy = y + i;
                     newx = x + j;
