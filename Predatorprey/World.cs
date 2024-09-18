@@ -15,27 +15,15 @@ namespace Project1
         public Random rnd { get; private set; }
 
         /// <summary>
-        /// The 'map' of the world
+        /// The 'map' of the world, the integers represent the index of the
+        /// predator in the entity list
         /// </summary>
-        private Entity[,] grid;
-
-        // Note that entities = predators ++ prey. This is to get the total
-        // number of predators and prey fast. It remains to be seen if this
-        // really is more efficient, because maintaining more sets is also
-        // more work.
+        private int [,] grid;
 
         /// <summary>
         /// Contains all active entities in the world
         /// </summary>
-        private HashSet<Entity> entities = new HashSet<Entity>();
-        /// <summary>
-        /// Contains all active predators in the world
-        /// </summary>
-        private HashSet<Predator> predators = new HashSet<Predator>();
-        /// <summary>
-        /// Contains all active prey in the world
-        /// </summary>
-        private HashSet<Prey> prey = new HashSet<Prey>();
+        private EntityList entities;
 
         /// <summary>
         /// Contains Entities which want to give birth. This will happen at the
@@ -51,19 +39,29 @@ namespace Project1
         {
             rnd = new Random(201);
 
+            entities = new EntityList(rnd);
+
             InitializeGrid();
 
             InitializeEntities();
         }
 
         /// <summary>
-        /// Initialize the grid of the world by making a 2D array of Entities
+        /// Initialize the grid of the world by making an empty 2D array of Entities
         /// </summary>
         private void InitializeGrid()
         {
             //Make the world grid
             int size = Config.worldSize;
-            grid = new Entity[size, size];
+            grid = new int[size, size];
+            // Fill the grid with empty spots (-1 signals empty)
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    grid[x, y] = -1;
+                }
+            }
         }
 
         /// <summary>
