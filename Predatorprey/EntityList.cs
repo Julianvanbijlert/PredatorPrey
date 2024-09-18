@@ -13,9 +13,12 @@ namespace Project1
         private (EntityType, int, int)[] _entities;
         private int k; //for knowing the amount of entities, this is the first one that is dead
 
-        public EntityList()
+        private Random rnd;
+
+        public EntityList(Random rnd)
         {
             _entities = new (EntityType, int, int)[Config.worldSize * Config.worldSize];
+            this.rnd = rnd;
         }
 
         public void KillEntity(int index)
@@ -38,6 +41,16 @@ namespace Project1
 
             _entities[k] = entity;
             return k++; //returns the index of the entity AND THEN increases k (hopefully)
+        }
+
+        /// <summary>
+        /// Returns a random (living) entity with uniform chance
+        /// </summary>
+        /// <returns>The chosen entity and its index in the list</returns>
+        public ((EntityType, int, int), int) GetRandomEntity()
+        {
+            int index = rnd.Next(0, k);
+            return (_entities[index], index);
         }
     }
 
