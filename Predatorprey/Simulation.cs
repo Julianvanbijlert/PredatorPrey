@@ -11,7 +11,10 @@ namespace Project1
     /// </summary>
     internal class Simulation
     {
+        private PredatorSimulator _predatorSimulator;
+        private PreySimulator _preySimulator;
         private World _world;
+        private EntityManager _entityManager;
 
         public static void Main()
         {
@@ -25,9 +28,14 @@ namespace Project1
         /// </summary>
         private void Initialize()
         {
-            _world = new World();
+            Random r = new Random(201);
 
-            
+            _world = new World(r);
+            _entityManager = new EntityManager(_world, r);
+            _predatorSimulator = new PredatorSimulator(_entityManager, r);
+            _preySimulator = new PreySimulator(_entityManager, r);
+
+            _entityManager.InitializeEntities();
         }
 
         /// <summary>
@@ -50,16 +58,22 @@ namespace Project1
             for (int i = 0; i < amountOfEntities; i++)
             {
                 // choose a random entity
-                Entity entity = _world.GetRandomEntity();
+                ((EntityType type, int, int) entity, int index) tuple = _world.entities.GetRandomEntity();
                 // let the entities do actions
-                entity.AttemptActions();
+                if (tuple.entity.type == EntityType.Predator)
+                {
+                    _predatorSimulator.SetCurrentEntity(tuple.entity, tuple.index);
+                    _predatorSimulator.AttemptActions();
+                }
+                else
+                {
+                    _preySimulator.SetCurrentEntity(tuple.entity, tuple.index);
+                    _preySimulator.AttemptActions();
+                }
             }
 
-            // add birthed entities to the world
-            _world.ReleaseBirthingEntities();
-
             // print the world
-            Output.PrintWorld(_world);
+            //Output.PrintWorld(_world);
             //Output.PrintList(_world);
 
             _world.PrintStats();

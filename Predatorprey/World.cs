@@ -18,32 +18,24 @@ namespace Project1
         /// The 'map' of the world, the integers represent the index of the
         /// predator in the entity list
         /// </summary>
-        private int [,] grid;
+        public int [,] grid { get; private set; }
 
         /// <summary>
         /// Contains all active entities in the world
         /// </summary>
-        private EntityList entities;
-
-        /// <summary>
-        /// Contains Entities which want to give birth. This will happen at the
-        /// end of the round for logistic reasons.
-        /// </summary>
-        private List<Entity> birthingEntities = new List<Entity>();
+        public EntityList entities { get; private set; }
 
         /// <summary>
         /// Represents the world with a grid and the entities on it.
         /// Is responsible for all operations over the entities, like moving, adding and removing
         /// </summary>
-        public World()
+        public World(Random rnd)
         {
-            rnd = new Random(201);
+            this.rnd = rnd;
 
             entities = new EntityList(rnd);
 
             InitializeGrid();
-
-            InitializeEntities();
         }
 
         /// <summary>
@@ -65,137 +57,78 @@ namespace Project1
         }
 
         /// <summary>
-        /// Randomly place Entities on the grid for the starting configuration
+        /// Returns whether the given cell is empty
         /// </summary>
-        private void InitializeEntities()
+        /// <param name="x">X coordinate of the cell</param>
+        /// <param name="y">Y coordinate of the cell</param>
+        /// <returns>True if the cell is empty, else false</returns>
+        public bool IsEmptyCell(int x, int y)
         {
-            // pass itself to the entities static 'world' variable
-            Entity.world = this;
-
-            //Make the Entities
-            int amountPrey = (int)(Config.worldSize * Config.worldSize * Config.preyDensity);
-            int amountPredator = (int)(Config.worldSize * Config.worldSize * Config.preditorDensity);
-
-            for (int i = 0; i < amountPrey; i++)
-            {
-                (int x, int y) = GetRandomEmptyLocation();
-                AddPrey(new Prey(x, y));
-            }
-
-            for (int i = 0; i < amountPredator; i++)
-            {
-                (int x, int y) = GetRandomEmptyLocation();
-                AddPredator(new Predator(x, y));
-            }
-        }
-
-
-        /// <summary>
-        /// Adds one prey to the world
-        /// </summary>
-        public void AddPrey(Prey p)
-        {
-            if (grid[p.x, p.y] != null && grid[p.x, p.y] != p) throw new Exception("Entity count will exceed capacity");
-
-            entities.Add(p);
-            prey.Add(p);
-            grid[p.x, p.y] = p;
-        }
-
-
-        /// <summary>
-        /// Adds one predator to the world
-        /// </summary>
-        public void AddPredator(Predator p)
-        {
-            if (grid[p.x, p.y] != null && grid[p.x, p.y] != p) throw new Exception("Entity count will exceed capacity");
-
-            entities.Add(p);
-            predators.Add(p);
-            grid[p.x, p.y] = p;
+            return grid[x, y] == -1;
         }
 
         /// <summary>
-        /// Retrieve one random Entity (Predator or Prey) from the world
+        /// Return the type of the entity in a cell. This function is unsafe
+        /// and must only be used if the cell is not empty.
         /// </summary>
-        /// <returns>The random Entity</returns>
-        public Entity GetRandomEntity()
+        /// <param name="x">X coordinate of the cell</param>
+        /// <param name="y">Y coordinate of the cell</param>
+        /// <returns>The type of the entity in the cell</returns>
+        public EntityType EntityTypeOnLocation(int x, int y)
         {
-            return entities.ElementAt(rnd.Next(entities.Count));
+            return entities.GetEntityType(grid[x, y]);
+        }
+
+        public List<int> GetSurroundingPrey(int x, int y)
+        {
+            List<int> result = new List<int>();
+
+            // up
+            AddIfPreyOnLocation(result, x, y + 1);
+            // right
+            AddIfPreyOnLocation(result, x + 1, y);
+            // down
+            AddIfPreyOnLocation(result, x, y - 1);
+            // left
+            AddIfPreyOnLocation(result, x - 1, y);
+
+            return result;
         }
 
         /// <summary>
-        /// Move an Entity on the grid and change its coordinates known to itself
+        /// Add prey index to list if location has a prey
         /// </summary>
-        /// <param name="entity">The entity to move</param>
-        /// <param name="x">The new x coordinate</param>
-        /// <param name="y">The new y coordinate</param>
-        public void MoveEntity(Entity entity, int x, int y)
+        public void AddIfPreyOnLocation(List<int> l, int x, int y)
         {
-            grid[entity.x, entity.y] = null;
-
-            if (grid[x, y] != null) throw new Exception("Location capacity would be exceeded");
-
-            grid[x, y] = entity;
-
-            entity.ChangeLocation(x, y);
+            int index = PreyOnLocation(x, y);
+            if(index != -1) l.Add(index);
         }
 
         /// <summary>
-        /// Remove the specified entity from the world
-        /// </summary>
-        public void RemoveEntity(Entity e)
-        {
-            grid[e.x, e.y] = null;
-            entities.Remove(e);
-        }
-
-        /// <summary>
-        /// Remove a Predator from the world.
-        /// </summary>
-        /// <param name="p">The predator to remove</param>
-        public void RemovePredator(Predator p)
-        {
-            RemoveEntity(p);
-            predators.Remove(p);
-        }
-
-        /// <summary>
-        /// Remove a prey from the world.
-        /// </summary>
-        /// <param name="p">The prey to remove</param>
-        public void RemovePrey(Prey p)
-        {
-            RemoveEntity(p);
-            prey.Remove(p);
-        }
-
-        /// <summary>
-        /// Get the prey that is on the specified location, if any
+        /// Get the (index of the) prey that is on the specified location, if any.
+        /// Else, -1 is returned.
         /// </summary>
         /// <param name="x">x coordinate of the location</param>
         /// <param name="y">y coordinate of the location</param>
-        /// <returns>The list of all prey on the location as Entities, because
-        /// casting to Prey is costly and not necessary</returns>
-        public Prey PreyOnLocation(int x, int y)
+        /// <returns>The index of the prey in the entity list</returns>
+        public int PreyOnLocation(int x, int y)
         {
-            if (IsWithinGrid(x, y))
+            if (IsWithinGrid(x, y) && !IsEmptyCell(x, y) && EntityTypeOnLocation(x, y) == EntityType.Prey)
             {
-                // will return null if grid[x, y] is empty or not Prey
-                return grid[x, y] as Prey;
+                return grid[x, y];
             }
-            return null;
+            return -1;
         }
 
         /// <summary>
-        /// Return whether the given location is available for an Entity
+        /// Return whether the given location is viable and available for an Entity
         /// </summary>
         /// <param name="x">The x coordinate of the queried location</param>
         /// <param name="y">The x coordinate of the queried location</param>
         /// <returns>True if the location is available for the Entity, otherwise false</returns>
         public bool IsAvailableLocation(int x, int y)
         {
-            return IsWithinGrid(x, y) && grid[x, y] == null;
+            return IsWithinGrid(x, y) && IsEmptyCell(x, y);
         }
 
         /// <summary>
@@ -209,26 +142,41 @@ namespace Project1
         }
 
         /// <summary>
-        /// Add an entity to the list of birthing entities
+        /// Get a random location to birth a new entity on, given location of parent
         /// </summary>
-        /// <param name="p">The entity to add to the list of
-        /// birthing entities</param>
-        public void AddBirthingEntity(Entity e)
+        /// <param name="x">x coordinate of the parent</param>
+        /// <param name="y">y coordinate of the parent</param>
+        /// <returns>The location to be birthed on</returns>
+        public (int, int)? GetBirthLocation(int x, int y)
         {
-            birthingEntities.Add(e);
+            // make a list of available locations
+            List<(int, int)> availableLocations = new List<(int, int)>(4);
+            // up
+            AddBirthLocationIfAvailable(availableLocations, x, y + 1);
+            // right
+            AddBirthLocationIfAvailable(availableLocations, x + 1, y);
+            // down
+            AddBirthLocationIfAvailable(availableLocations, x, y - 1);
+            // left
+            AddBirthLocationIfAvailable(availableLocations, x - 1, y);
+
+            // choose one randomly
+            if (availableLocations.Count > 0)
+                return availableLocations[rnd.Next(availableLocations.Count)];
+
+            return null;
+        }
+
+        private void AddBirthLocationIfAvailable(List<(int, int)> available, int x, int y)
+        {
+            if (IsAvailableLocation(x, y))
+                available.Add((x, y));
         }
 
         /// <summary>
-        /// Set all birthed Entities in the world and empty the birth lists
+        /// Get a random empty location from the grid
         /// </summary>
-        public void ReleaseBirthingEntities()
-        {
-            foreach (Entity e in birthingEntities)
-            {
-                e.GiveBirth();
-            }
-        }
-
+        /// <returns></returns>
         public (int, int) GetRandomEmptyLocation()
         {
             int x, y;
@@ -236,11 +184,18 @@ namespace Project1
             {
                 x = rnd.Next(Config.worldSize);
                 y = rnd.Next(Config.worldSize);
-            } while (grid[x, y] != null);
+            } while (!IsEmptyCell(x, y)); // do not use IsAvailableLocation(),
+                                          // because this checks whether the
+                                          // location is in the grid, which is
+                                          // already guaranteed
 
             return (x, y);
         }
 
+        /// <summary>
+        /// Get a random available location within the range of the given location
+        /// </summary>
+        /// <returns>The coordinates of the random location</returns>
         public (int, int) GetLocationNext(int x, int y)
         {
             //get all locations around the current location that are not off the board
@@ -292,22 +247,7 @@ namespace Project1
         {
             Console.WriteLine();
             Console.WriteLine("Entities: " + AmountOfEntities);
-            Console.WriteLine("Predators: " + AmountOfPredators);
-            Console.WriteLine("Prey: " + AmountOfPrey);
         }
-
-        /// <summary>
-        /// The amount of predators currently active in the world.
-        /// Birthed predators do not count yet.
-        /// </summary>
-        public int AmountOfPredators => predators.Count;
-
-
-        /// <summary>
-        /// The amount of prey currently active in the world.
-        /// Birthed prey do not count yet.
-        /// </summary>
-        public int AmountOfPrey => prey.Count;
 
 
         /// <summary>
@@ -335,10 +275,5 @@ namespace Project1
 
             return sum;
         }
-
-
-        public Entity[,] GetGrid => grid;
-
-        public HashSet<Entity> GetEntities => entities;
     }
 }

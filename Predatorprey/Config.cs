@@ -18,8 +18,8 @@ namespace Project1
 
         public const double predationRate = 0.25;
 
-        public const double preditorDensity = 0.003;
-        public const double preyDensity = 0.003;
+        public const double preditorDensity = 0.15;
+        public const double preyDensity = 0.15;
 
         public const int amountOfRounds = 500;
 
