@@ -98,7 +98,7 @@ namespace Project1
         /// <summary>
         /// Add prey index to list if location has a prey
         /// </summary>
-        public void AddIfPreyOnLocation(List<int> l, int x, int y)
+        private void AddIfPreyOnLocation(List<int> l, int x, int y)
         {
             int index = PreyOnLocation(x, y);
             if(index != -1) l.Add(index);

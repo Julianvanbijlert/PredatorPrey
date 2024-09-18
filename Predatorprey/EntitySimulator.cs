@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Project1
 {
+    /// <summary>
+    /// Class for the actions the entities can simulate
+    /// </summary>
     public abstract class EntitySimulator
     {
         /// <summary>
@@ -19,6 +22,9 @@ namespace Project1
         /// </summary>
         protected int _currentEntityIndex { get; private set; }
 
+        /// <summary>
+        /// Object for changing entities in the world
+        /// </summary>
         protected EntityManager entityManager;
 
         protected World world { get; private set; }
@@ -32,6 +38,11 @@ namespace Project1
             this.rnd = rnd;
         }
 
+        /// <summary>
+        /// Set the currently used entity in the variables
+        /// </summary>
+        /// <param name="entity">The entity to use</param>
+        /// <param name="entityIndex">The index of the entity in the entity list</param>
         public void SetCurrentEntity((EntityType, int, int) entity, int entityIndex)
         {
             _currentEntity = entity;
@@ -85,7 +96,7 @@ namespace Project1
         }
 
         /// <summary>
-        /// Do predation on a prey p
+        /// Do predation on a prey 
         /// </summary>
         /// <param name="p">The prey to kill</param>
         private void Predation((EntityType _, int x, int y) prey, int preyIndex)
