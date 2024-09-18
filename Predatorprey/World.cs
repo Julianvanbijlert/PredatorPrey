@@ -269,7 +269,7 @@ namespace Project1
             {
                 for (int y = 0; y < Config.worldSize; y++)
                 {
-                    if (grid[x, y] != null) sum++;
+                    if (grid[x, y] != -1) sum++;
                 }
             }
 
