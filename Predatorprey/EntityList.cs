@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Project1
 {
-    public abstract class EntityList
+    /// <summary>
+    /// A simple class for keeping track of the live entities.
+    /// Supports adding, removing and random indexing of the entities.
+    /// </summary>
+    public class EntityList
     {
         public enum EntityType { Predator, Prey };
 
@@ -51,24 +55,6 @@ namespace Project1
         {
             int index = rnd.Next(0, k);
             return (_entities[index], index);
-        }
-    }
-
-    public class PredatorList : EntityList
-    {
-        public PredatorList() : base()
-        {
-        }
-
-
-       
-    }
-
-    public class PreyList : EntityList
-    {
-        public PreyList()
-        {
-
         }
     }
 }
