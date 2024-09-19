@@ -14,9 +14,12 @@ namespace Project1
         public const double birthRate = 1;
         public const double walkRate = 0.01;
         public const int walkDistance = 5;
+        public const int smellDistance = 1;
 
 
         public const double predationRate = 0.25;
+
+        public const int smellStrength = 5;
 
         public const double preditorDensity = 0.15;
         public const double preyDensity = 0.15;

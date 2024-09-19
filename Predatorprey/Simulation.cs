@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Project1
 {
@@ -15,6 +12,8 @@ namespace Project1
         private PreySimulator _preySimulator;
         private World _world;
         private EntityManager _entityManager;
+        //private Forms _forms;
+
 
         public static void Main()
         {
@@ -77,6 +76,7 @@ namespace Project1
             //Output.PrintList(_world);
 
             _world.PrintStats();
+
         }
     }
 }

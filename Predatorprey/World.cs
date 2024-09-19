@@ -25,6 +25,9 @@ namespace Project1
         /// </summary>
         public EntityList entities { get; private set; }
 
+
+        public SmellMap smellMap { get; private set; }
+
         /// <summary>
         /// Represents the world with a grid and the entities on it.
         /// Is responsible for all operations over the entities, like moving, adding and removing
@@ -34,6 +37,8 @@ namespace Project1
             this.rnd = rnd;
 
             entities = new EntityList(rnd);
+
+            this.smellMap = new SmellMap();
 
             InitializeGrid();
         }
@@ -136,7 +141,7 @@ namespace Project1
         /// </summary>
         /// <param name="x">The x of the queried location</param>
         /// <param name="y">The y of the queried location</param>
-        public bool IsWithinGrid(int x, int y)
+        public static bool IsWithinGrid(int x, int y)
         {
             return x >= 0 && x < Config.worldSize && y >= 0 && y < Config.worldSize;
         }
@@ -211,6 +216,16 @@ namespace Project1
 
         }
 
+        public (int, int) GetLocationFast(int x, int y)
+        {
+            if (IsAvailableLocation(x + 1, y)) return (x + 1, y);
+            if (IsAvailableLocation(x - 1, y)) return (x - 1, y);
+            if (IsAvailableLocation(x, y + 1)) return (x, y + 1);
+            if (IsAvailableLocation(x, y - 1)) return (x, y - 1);
+
+            return (x, y);
+        }
+
         /// <summary>
         /// Get all locations around the current location that are not off the board.
         /// Could be changed into only up, down, left, right
@@ -245,16 +260,64 @@ namespace Project1
         /// </summary>
         public void PrintStats()
         {
-            Console.WriteLine();
+            Console.Clear();
+
+            int tempAmountOfEntities = 0;
+            int[] countArray = new int[Config.worldSize / Config.BlockSize + 1]; //+1 for the last block
+
+            for (int y = 0; y < Config.worldSize; y++)
+            {
+                for (int x = 0; x < Config.worldSize; x++)
+                {
+
+                    //checks if there is an entity on the grid
+                    if(grid[x, y] != -1)
+                        tempAmountOfEntities++; 
+
+
+
+                    if (x % Config.BlockSize == 0)
+                    {
+                       //collect entities in blocks
+                        int pointer = x / Config.BlockSize;
+                        countArray[pointer] += tempAmountOfEntities;
+                        tempAmountOfEntities = 0;
+
+                        if (y % Config.BlockSize == 0)
+                        {
+                            //print the amount of entities in the block
+                            Console.Write("|" + countArray[pointer] + "|");
+                            countArray[pointer] = 0;
+
+                            //make sure the gris is "square"
+                            if(pointer == Config.worldSize / Config.BlockSize)
+                                Console.WriteLine();    
+
+
+                        }
+                    }
+
+                }
+
+           }
+
+            Console.WriteLine("Predators: " + entities.AmountOfPredators);
+            Console.WriteLine("Prey: " + entities.AmountOfPrey);
             Console.WriteLine("Entities: " + AmountOfEntities);
         }
 
+
+        
 
         /// <summary>
         /// The total amount of entities currently active in the world.
         /// Birthed entities do not count yet.
         /// </summary>
         public int AmountOfEntities => entities.Count;
+
+        public int AmountOfPredators => entities.AmountOfPredators;
+
+        public int AmountOfPrey => entities.AmountOfPrey;
 
         /// <summary>
         /// Calculates the amount of entities in the grid. This must match

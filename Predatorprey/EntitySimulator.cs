@@ -31,11 +31,14 @@ namespace Project1
 
         protected Random rnd { get; private set; }
 
+        protected SmellMap smellMap { get; private set; }
+
         public EntitySimulator(EntityManager entityManager, Random rnd)
         {
             this.entityManager = entityManager;
             this.world = entityManager.world;
             this.rnd = rnd;
+            this.smellMap = world.smellMap;
         }
 
         /// <summary>
@@ -55,16 +58,34 @@ namespace Project1
         /// Attempt to move to a different location.
         /// The new location can be anywhere on the grid with an uniform chance.
         /// </summary>
-        protected void AttemptWalk()
+        protected void AttemptWalkSlow()
         {
             if (Attempt.Success(rnd, Config.walkRate))
             {
                 (int newX, int newY) = world.GetLocationNext(_currentEntity.x, _currentEntity.y);
 
                 entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
+
+
             }
         }
+
+
+        protected abstract void AttemptWalk();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public class PredatorSimulator : EntitySimulator
     {
@@ -95,6 +116,21 @@ namespace Project1
             }
         }
 
+        protected override void AttemptWalk()
+        {
+            if (Attempt.Success(rnd, Config.walkRate))
+            {
+                
+                (int newX, int newY) = smellMap.GetSurroundingSmells(_currentEntity.x, _currentEntity.y);
+
+                //check if it does not return same location because that means it did not find any smell
+                if(newX == _currentEntity.x && newY == _currentEntity.y)
+                    world.GetLocationFast(_currentEntity.x, _currentEntity.y);
+
+                entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
+            }
+        }
+
         /// <summary>
         /// Do predation on a prey 
         /// </summary>
@@ -117,6 +153,20 @@ namespace Project1
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public class PreySimulator : EntitySimulator
     {
         public PreySimulator(EntityManager entityManager, Random rnd) : base(entityManager, rnd)
@@ -127,6 +177,21 @@ namespace Project1
         {
             AttemptWalk();
             AttemptBirth();
+        }
+
+        protected override void AttemptWalk()
+        {
+            if (Attempt.Success(rnd, Config.walkRate))
+            {
+                (int newX, int newY) = world.GetLocationFast(_currentEntity.x, _currentEntity.y);
+
+                //add smell in place where it was
+                smellMap.AddSmell(_currentEntity.Item2, _currentEntity.Item2,  Config.smellStrength);
+
+                //replace the location of the entity
+                entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
+
+            }
         }
 
         private void AttemptBirth()

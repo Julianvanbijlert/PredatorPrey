@@ -12,10 +12,13 @@ namespace Project1
     /// A simple class for keeping track of the live entities.
     /// Supports adding, removing and random indexing of the entities.
     /// </summary>
-    public class EntityList
+    public class EntityList 
     {
         private (EntityType, int, int)[] _entities;
         private int k; //for knowing the amount of entities, this is the first one that is dead
+
+        private int amountOfPredators;
+        private int amountOfPrey;
 
         private Random rnd;
 
@@ -23,6 +26,10 @@ namespace Project1
         {
             _entities = new (EntityType, int, int)[Config.worldSize * Config.worldSize];
             this.rnd = rnd;
+            k = 0;
+            amountOfPredators = 0;
+            amountOfPrey = 0;
+
         }
 
         public void KillEntity(int index)
@@ -36,6 +43,9 @@ namespace Project1
             (EntityType, int, int) temp = _entities[index1];
             _entities[index1] = _entities[index2];
             _entities[index2] = temp;
+
+
+            DecreaseEntityCount(temp);
         }
 
         public int BirthEntity((EntityType, int, int) entity)
@@ -45,8 +55,14 @@ namespace Project1
 
 
             _entities[k] = entity;
+            
+            IncreaseEntityCount(entity);
+
+
             return k++; //returns the index of the entity AND THEN increases k (hopefully)
         }
+
+
 
         /// <summary>
         /// Returns a random (living) entity with uniform chance
@@ -85,6 +101,29 @@ namespace Project1
             _entities[index] = (type, newX, newY);
         }
 
+        public void IncreaseEntityCount((EntityType, int, int) entity)
+        {
+            //increase the amount of predators or prey
+            if (entity.Item1 == EntityType.Predator)
+                amountOfPredators++;
+            else
+                amountOfPrey++;
+        }
+
+        public void DecreaseEntityCount((EntityType, int, int) entity)
+        {
+            //decrease the amount of predators or prey
+            if (entity.Item1 == EntityType.Predator)
+                amountOfPredators--;
+            else
+                amountOfPrey--;
+        }
+
+
         public int Count => k;
+
+        public int AmountOfPredators => amountOfPredators;
+
+        public int AmountOfPrey => amountOfPrey;
     }
 }
