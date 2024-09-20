@@ -27,5 +27,10 @@ namespace Project1
         public const int amountOfRounds = 500;
 
         public const int BlockSize = worldSize / 10;
+
+        /// <summary>
+        /// True if the simulation has smell mechanic enabled, else false
+        /// </summary>
+        public const bool WithSmell = false;
     }
 }

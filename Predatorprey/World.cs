@@ -38,7 +38,7 @@ namespace Project1
 
             entities = new EntityList(rnd);
 
-            this.smellMap = new SmellMap();
+            if(Config.WithSmell) this.smellMap = new SmellMap();
 
             InitializeGrid();
         }

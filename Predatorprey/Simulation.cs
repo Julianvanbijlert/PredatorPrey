@@ -71,7 +71,7 @@ namespace Project1
                 }
             }
 
-            _world.smellMap.DecreaseSmells();
+            if(Config.WithSmell) _world.smellMap.DecreaseSmells();
 
             // print the world
             //Output.PrintWorld(_world);

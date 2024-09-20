@@ -89,5 +89,15 @@ namespace Project1
 
             return result;
         }
+
+        public bool AnyWithSmell()
+        {
+            foreach (int x in _smellMap)
+            {
+                if (x > 0) return true;
+            }
+
+            return false;
+        }
     }   
 }
