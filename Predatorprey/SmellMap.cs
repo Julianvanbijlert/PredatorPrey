@@ -16,9 +16,9 @@ namespace Project1
             _smellMap = new int[Config.worldSize, Config.worldSize];
         }
 
-        public void AddSmell(int x, int y, int smell)
+        public void AddSmell(int x, int y)
         {
-            _smellMap[x, y] = smell;
+            _smellMap[x, y] = Config.smellStrength;
         }
 
         public int GetSmell(int x, int y)
@@ -26,11 +26,14 @@ namespace Project1
             return _smellMap[x, y];
         }
 
-        public void DecreaseSmell(int x, int y)
+        private void DecreaseSmell(int x, int y)
         {
             _smellMap[x, y]--;
         }
 
+        /// <summary>
+        /// Decrease all smells in the world by 1
+        /// </summary>
         public void DecreaseSmells()
         {
             for (int y = 0; y < Config.worldSize; y++)
@@ -39,20 +42,52 @@ namespace Project1
                 {
                     if (_smellMap[x, y] > 0)
                     {
-                        _smellMap[x, y]--;
+                        DecreaseSmell(x, y);
                     }
                 }
             }
         }
 
-        public (int, int) GetSurroundingSmells(int x, int y)
+        /// <summary>
+        /// Return a list of coordinates with locations, all of which have the
+        /// same, highest, smell number
+        /// </summary>
+        /// <param name="x">X of the queried location</param>
+        /// <param name="y">Y of the queried location</param>
+        /// <returns>List of locations with the highest smell numbers</returns>
+        public List<(int, int)> GetHighestSurroundingSmells(int x, int y)
         {
-            if (World.IsWithinGrid(x + 1, y) && _smellMap[x + 1, y] > 0) return (x + 1, y);
-            if (World.IsWithinGrid(x - 1, y) && _smellMap[x - 1, y] > 0) return (x - 1, y);
-            if (World.IsWithinGrid(x, y + 1) && _smellMap[x, y + 1] > 0) return (x, y + 1);
-            if (World.IsWithinGrid(x, y - 1) &&_smellMap[x, y - 1] > 0) return (x, y - 1);
+            // keep track of highest smell value and smell list
+            int maxSmell = int.MinValue;
+            List<(int, int)> result = new List<(int, int)>();
 
-            return (x,y);
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    int locationX = x + dx;
+                    int locationY = y + dy;
+
+                    // skip if location is outside grid
+                    if (!World.IsWithinGrid(locationX, locationY))
+                        continue;
+
+                    // new highest sell is found. Reset smell value and list.
+                    if (_smellMap[locationX, locationY] > maxSmell)
+                    {
+                        maxSmell = _smellMap[locationX, locationY];
+                        result.Clear();
+                        result.Add((locationX, locationY));
+                    }
+                    // location has (not unique) highest smell
+                    else if (_smellMap[locationX, locationY] == maxSmell)
+                    {
+                        result.Add((locationX, locationY));
+                    }
+                }
+            }
+
+            return result;
         }
     }   
 }

@@ -71,7 +71,37 @@ namespace Project1
         }
 
 
-        protected abstract void AttemptWalk();
+        protected void AttemptWalk()
+        {
+            if (Attempt.Success(rnd, Config.walkRate))
+            {
+                Walk();
+            }
+        }
+
+        private void Walk()
+        {
+            for (int i = 0; i < Config.walkDistance; i++)
+            {
+                (int newX, int newY) = GetNextSpot();
+                if(newX != _currentEntity.x && newY != _currentEntity.y) 
+                    WalkOneStep(newX, newY);
+            }
+        }
+
+        /// <summary>
+        /// Let predator or prey pick a next, neighboring spot to walk to
+        /// </summary>
+        protected abstract (int, int) GetNextSpot();
+
+        /// <summary>
+        /// Let entity walk one step to new location.
+        /// Method is handy for deploying smell if needed
+        /// </summary>
+        protected virtual void WalkOneStep(int newX, int newY)
+        {
+            entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
+        }
     }
 
 
@@ -116,19 +146,19 @@ namespace Project1
             }
         }
 
-        protected override void AttemptWalk()
+        protected override (int, int) GetNextSpot()
         {
-            if (Attempt.Success(rnd, Config.walkRate))
-            {
-                
-                (int newX, int newY) = smellMap.GetSurroundingSmells(_currentEntity.x, _currentEntity.y);
+            // get neighbor locations with highest smell values
+            List<(int x, int y)> highestSmells = smellMap.GetHighestSurroundingSmells(_currentEntity.x, _currentEntity.y);
 
-                //check if it does not return same location because that means it did not find any smell
-                if(newX == _currentEntity.x && newY == _currentEntity.y)
-                    world.GetLocationFast(_currentEntity.x, _currentEntity.y);
+            List<(int, int)> possibleLocations = highestSmells.FindAll(location => world.IsEmptyCell(location.x, location.y));
 
-                entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
-            }
+            // if you have no options, return current location
+            if (possibleLocations.Count == 0)
+                return (_currentEntity.x , _currentEntity.y);
+
+            // else, choose a random option
+            return possibleLocations[rnd.Next(possibleLocations.Count)];
         }
 
         /// <summary>
@@ -179,19 +209,33 @@ namespace Project1
             AttemptBirth();
         }
 
-        protected override void AttemptWalk()
+        protected override (int, int) GetNextSpot()
         {
-            if (Attempt.Success(rnd, Config.walkRate))
+            List<(int, int)> possibleLocations = new List<(int, int)>();
+            for (int dx = -1; dx <= 1; dx++)
             {
-                (int newX, int newY) = world.GetLocationFast(_currentEntity.x, _currentEntity.y);
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    int locationX = _currentEntity.x + dx;
+                    int locationY = _currentEntity.y + dy;
 
-                //add smell in place where it was
-                smellMap.AddSmell(_currentEntity.Item2, _currentEntity.Item2,  Config.smellStrength);
-
-                //replace the location of the entity
-                entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
-
+                    if(world.IsAvailableLocation(locationX, locationY))
+                        possibleLocations.Add((locationX, locationY));
+                }
             }
+
+            // if no possible locations, return current location
+            if(possibleLocations.Count == 0) 
+                return (_currentEntity.x, _currentEntity.y);
+
+            // else pick up random option
+            return possibleLocations[rnd.Next(possibleLocations.Count)];
+        }
+
+        protected override void WalkOneStep(int newX, int newY)
+        {
+            smellMap.AddSmell(_currentEntity.x, _currentEntity.y);
+            base.WalkOneStep(newX, newY);
         }
 
         private void AttemptBirth()
