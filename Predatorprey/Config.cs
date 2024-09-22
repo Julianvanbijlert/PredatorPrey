@@ -11,13 +11,13 @@ namespace Project1
         public const int worldSize = 512;
 
         public const double deathRate = 0.025;
-        public const double birthRate = 1;
-        public const double walkRate = 0.01;
+        public const double birthRate = 0.6;
+        public const double walkRate = 0.1;
         public const int walkDistance = 5;
         public const int smellDistance = 1;
 
 
-        public const double predationRate = 0.25;
+        public const double predationRate = 1;
 
         public const int smellStrength = 5;
 

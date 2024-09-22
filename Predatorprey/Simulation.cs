@@ -1,4 +1,7 @@
 ﻿using System;
+using Microsoft.VisualBasic;
+using ScottPlot;
+
 
 
 namespace Project1
@@ -12,10 +15,18 @@ namespace Project1
         private PreySimulator _preySimulator;
         private World _world;
         private EntityManager _entityManager;
+        private PlotManager _plotManager;
         //private Forms _forms;
 
+       
+        class Program
+        {
+            static void Maind()
+            {
+            }
+        }
 
-        public static void Main()
+    public static void Main()
         {
             Simulation s = new Simulation();
             s.Initialize();
@@ -33,6 +44,8 @@ namespace Project1
             _entityManager = new EntityManager(_world, r);
             _predatorSimulator = new PredatorSimulator(_entityManager, r);
             _preySimulator = new PreySimulator(_entityManager, r);
+            _plotManager = new PlotManager();
+            
 
             _entityManager.InitializeEntities();
         }
@@ -44,14 +57,18 @@ namespace Project1
         {
             for (int i = 0; i < Config.amountOfRounds; i++)
             {
-                Round();
+                Round(i);
             }
+
+            _plotManager.SavePlot();
+
         }
+
 
         /// <summary>
         /// Handle one single round of the simulation
         /// </summary>
-        private void Round()
+        private void Round(int round)
         {
             int amountOfEntities = _world.AmountOfEntities;
             for (int i = 0; i < amountOfEntities; i++)
@@ -77,8 +94,13 @@ namespace Project1
             //Output.PrintWorld(_world);
             //Output.PrintList(_world);
 
+            SaveStats(round);
             _world.PrintStats();
+        }
 
+        public void SaveStats(int round)
+        {
+            _world.AddStatsToPM(_plotManager, round);
         }
     }
 }

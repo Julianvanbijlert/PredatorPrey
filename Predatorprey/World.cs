@@ -306,8 +306,11 @@ namespace Project1
             Console.WriteLine("Entities: " + AmountOfEntities);
         }
 
+        public void AddStatsToPM(PlotManager pm, int round)
+        {
+            pm.AddData(round, AmountOfEntities, AmountOfPredators, AmountOfPrey);
+        }
 
-        
 
         /// <summary>
         /// The total amount of entities currently active in the world.
@@ -338,5 +341,7 @@ namespace Project1
 
             return sum;
         }
+
+        
     }
 }
