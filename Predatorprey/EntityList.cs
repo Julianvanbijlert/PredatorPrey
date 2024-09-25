@@ -39,18 +39,19 @@ namespace Project1
 
         public void KillEntity(int index)
         {
-            DecreaseEntityCount(_entities[index]);
+            // update the grid
+            (EntityType _, int x, int y) deadEntity = GetEntity(index);
+            (EntityType _, int x, int y) shiftedEntity = GetEntity(k - 1);
+            _world.grid[deadEntity.x, deadEntity.y] = -1;
+            _world.grid[shiftedEntity.x, shiftedEntity.y] = index;
 
             //trades places with the last entity and then kills it by decreasing k
-            ShiftEntity(k - 1,index);
+            ShiftEntity(k - 1, index);
 
-            // update the grid
-            (var _, int xDead, int yDead) = GetEntity(index);
-            (var _, int xShifted, int yShifted) = GetEntity(k - 1);
+            // update entity count
+            DecreaseEntityCount(deadEntity);
 
-            _world.grid[xDead, yDead] = -1;
-            _world.grid[xShifted, yShifted] = index;
-
+            // update k
             k--;
         }
 
