@@ -77,8 +77,9 @@ namespace Project1
             
             IncreaseEntityCount(entity);
 
+            k++;
 
-            return k++; //returns the index of the entity AND THEN increases k (hopefully)
+            return k - 1; //returns the index of the entity AND THEN increases k (hopefully)
         }
 
 

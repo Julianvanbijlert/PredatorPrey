@@ -15,7 +15,7 @@ namespace Project1
         /// <summary>
         /// The entity which is currently attempting actions
         /// </summary>
-        protected (EntityType type, int x, int y) _currentEntity { get; private set; }
+        protected (EntityType type, int x, int y) _currentEntity => world.entities.GetEntity(_currentEntityIndex);
 
         /// <summary>
         /// The index of the current entity
@@ -48,7 +48,6 @@ namespace Project1
         /// <param name="entityIndex">The index of the entity in the entity list</param>
         public void SetCurrentEntity((EntityType, int, int) entity, int entityIndex)
         {
-            _currentEntity = entity;
             _currentEntityIndex = entityIndex;
         }
 
@@ -122,7 +121,6 @@ namespace Project1
         protected virtual void WalkOneStep(int newX, int newY)
         {
             entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
-            _currentEntity = (_currentEntity.Item1, newX, newY);
         }
     }
 
@@ -158,7 +156,8 @@ namespace Project1
         /// </summary>
         private void AttemptPredation()
         {
-            foreach (int preyIndex in world.GetSurroundingPrey(_currentEntity.x, _currentEntity.y))
+            List<int> surrounding = world.GetSurroundingPrey(_currentEntity.x, _currentEntity.y);
+            foreach (int preyIndex in surrounding)
             {
                 if (Attempt.Success(rnd, Config.predationRate))
                 {
