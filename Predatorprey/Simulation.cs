@@ -102,5 +102,38 @@ namespace Project1
         {
             _world.AddStatsToPM(_plotManager, round);
         }
+
+        /// <summary>
+        /// Checks whether the entity list and the world grid
+        /// agree with each other. Can be used for testing.
+        /// </summary>
+        private bool ListMatchesGrid()
+        {
+            int k = _world.entities.k;
+            for (int i = 0; i < k; i++)
+            {
+                (EntityType _, int x, int y) entity = _world.entities.GetEntity(i);
+                if (_world.grid[entity.x, entity.y] != i)
+                {
+                    return false;
+                }
+            }
+
+            for (int x = 0; x < Config.worldSize; x++)
+            {
+                for (int y = 0; y < Config.worldSize; y++)
+                {
+                    int index = _world.grid[x, y];
+                    if (index == -1) continue;
+                    (EntityType type, int x, int y) entities = _world.entities.GetEntity(index);
+                    if (entities.x != x || entities.y != y)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace Project1
         {
             this.rnd = rnd;
 
-            entities = new EntityList(rnd);
+            entities = new EntityList(rnd, this);
 
             if(Config.WithSmell) this.smellMap = new SmellMap();
 

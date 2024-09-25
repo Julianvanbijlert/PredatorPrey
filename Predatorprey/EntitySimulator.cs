@@ -122,6 +122,7 @@ namespace Project1
         protected virtual void WalkOneStep(int newX, int newY)
         {
             entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
+            _currentEntity = (_currentEntity.Item1, newX, newY);
         }
     }
 
@@ -161,7 +162,11 @@ namespace Project1
             {
                 if (Attempt.Success(rnd, Config.predationRate))
                 {
-                    (EntityType, int, int) prey = world.entities.GetEntity(preyIndex);
+                    (EntityType type, int, int) prey = world.entities.GetEntity(preyIndex);
+                    if (prey.type != EntityType.Prey)
+                    {
+                        int hiwfhwf = 0;
+                    }
                     Predation(prey, preyIndex);
                 }
             }
@@ -189,8 +194,18 @@ namespace Project1
         /// Do predation on a prey 
         /// </summary>
         /// <param name="p">The prey to kill</param>
-        private void Predation((EntityType _, int x, int y) prey, int preyIndex)
+        private void Predation((EntityType type, int x, int y) prey, int preyIndex)
         {
+            if (prey.type != EntityType.Prey)
+            {
+                int efjiejef = 0;
+            }
+
+            if (world.entities.GetEntity(preyIndex).Item1 != EntityType.Prey)
+            {
+                int haicahsouoih = 0;
+            }
+
             // kill Prey and birth new Predator
             entityManager.RemoveEntity(prey, preyIndex);
             entityManager.BirthEntity(_currentEntity);

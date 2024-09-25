@@ -15,14 +15,18 @@ namespace Project1
     public class EntityList 
     {
         private (EntityType, int, int)[] _entities;
-        private int k; //for knowing the amount of entities, this is the first one that is dead
+        public int k { get; private set; } //for knowing the amount of entities, this is the first one that is dead
 
         private int amountOfPredators;
         private int amountOfPrey;
 
+        // reference to world is needed to update index of shifted
+        // entity in grid when an entity is deleted
+        private World _world;
+
         private Random rnd;
 
-        public EntityList(Random rnd)
+        public EntityList(Random rnd, World world)
         {
             _entities = new (EntityType, int, int)[Config.worldSize * Config.worldSize];
             this.rnd = rnd;
@@ -30,12 +34,27 @@ namespace Project1
             amountOfPredators = 0;
             amountOfPrey = 0;
 
+            _world = world;
         }
 
         public void KillEntity(int index)
         {
             //trades places with the last entity and then kills it by decreasing k
-            ChangePlaces(index, --k);
+            ShiftEntity(k - 1,index);
+
+            // update the grid
+            (var _, int xDead, int yDead) = GetEntity(index);
+            (var _, int xShifted, int yShifted) = GetEntity(k - 1);
+
+            _world.grid[xDead, yDead] = -1;
+            _world.grid[xShifted, yShifted] = index;
+
+            k--;
+        }
+
+        private void ShiftEntity(int oldIndex, int newIndex)
+        {
+            _entities[newIndex] = _entities[oldIndex];
         }
 
         private void ChangePlaces(int index1, int index2)
