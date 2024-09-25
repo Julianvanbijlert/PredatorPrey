@@ -39,6 +39,8 @@ namespace Project1
 
         public void KillEntity(int index)
         {
+            DecreaseEntityCount(_entities[index]);
+
             //trades places with the last entity and then kills it by decreasing k
             ShiftEntity(k - 1,index);
 
@@ -55,16 +57,6 @@ namespace Project1
         private void ShiftEntity(int oldIndex, int newIndex)
         {
             _entities[newIndex] = _entities[oldIndex];
-        }
-
-        private void ChangePlaces(int index1, int index2)
-        {
-            (EntityType, int, int) temp = _entities[index1];
-            _entities[index1] = _entities[index2];
-            _entities[index2] = temp;
-
-
-            DecreaseEntityCount(temp);
         }
 
         public int BirthEntity((EntityType, int, int) entity)
