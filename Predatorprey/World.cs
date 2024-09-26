@@ -84,31 +84,6 @@ namespace Project1
             return entities.GetEntityType(grid[x, y]);
         }
 
-        public List<int> GetSurroundingPrey(int x, int y)
-        {
-            List<int> result = new List<int>();
-
-            // up
-            AddIfPreyOnLocation(result, x, y + 1);
-            // right
-            AddIfPreyOnLocation(result, x + 1, y);
-            // down
-            AddIfPreyOnLocation(result, x, y - 1);
-            // left
-            AddIfPreyOnLocation(result, x - 1, y);
-
-            return result;
-        }
-
-        /// <summary>
-        /// Add prey index to list if location has a prey
-        /// </summary>
-        private void AddIfPreyOnLocation(List<int> l, int x, int y)
-        {
-            int index = PreyOnLocation(x, y);
-            if(index != -1) l.Add(index);
-        }
-
         /// <summary>
         /// Get the (index of the) prey that is on the specified location, if any.
         /// Else, -1 is returned.

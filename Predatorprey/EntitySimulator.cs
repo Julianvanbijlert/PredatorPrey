@@ -156,13 +156,25 @@ namespace Project1
         /// </summary>
         private void AttemptPredation()
         {
-            List<int> surrounding = world.GetSurroundingPrey(_currentEntity.x, _currentEntity.y);
-            foreach (int preyIndex in surrounding)
+            // up
+            AttemptPredationOnOneLocation(_currentEntity.x, _currentEntity.y + 1);
+            // right
+            AttemptPredationOnOneLocation(_currentEntity.x + 1, _currentEntity.y);
+            // down
+            AttemptPredationOnOneLocation(_currentEntity.x, _currentEntity.y - 1);
+            // left
+            AttemptPredationOnOneLocation(_currentEntity.x - 1, _currentEntity.y);
+        }
+
+        private void AttemptPredationOnOneLocation(int x, int y)
+        {
+            // get the index of the prey on the location. If no prey exists there, -1 is returned.
+            int index = world.PreyOnLocation(x, y);
+
+            // check whether there is a prey on index and see if predation is successful
+            if (index != -1 && Attempt.Success(rnd, Config.predationRate))
             {
-                if (Attempt.Success(rnd, Config.predationRate))
-                {
-                    Predation(preyIndex);
-                }
+                Predation(index);
             }
         }
 
