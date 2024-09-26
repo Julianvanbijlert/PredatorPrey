@@ -67,7 +67,7 @@ namespace Project1
             for (int i = 0; i < Config.walkDistance; i++)
             {
                 (int newX, int newY) = GetNextSpot();
-                if(newX != _currentEntity.x && newY != _currentEntity.y) 
+                if(!(newX == _currentEntity.x && newY == _currentEntity.y)) 
                     WalkOneStep(newX, newY);
             }
         }
@@ -237,29 +237,6 @@ namespace Project1
         {
             AttemptWalk();
             AttemptBirth();
-        }
-
-        protected override (int, int) GetNextSpot()
-        {
-            List<(int, int)> possibleLocations = new List<(int, int)>();
-            for (int dx = -1; dx <= 1; dx++)
-            {
-                for (int dy = -1; dy <= 1; dy++)
-                {
-                    int locationX = _currentEntity.x + dx;
-                    int locationY = _currentEntity.y + dy;
-
-                    if(world.IsAvailableLocation(locationX, locationY))
-                        possibleLocations.Add((locationX, locationY));
-                }
-            }
-
-            // if no possible locations, return current location
-            if(possibleLocations.Count == 0) 
-                return (_currentEntity.x, _currentEntity.y);
-
-            // else pick up random option
-            return possibleLocations[rnd.Next(possibleLocations.Count)];
         }
 
         protected override void WalkOneStep(int newX, int newY)
