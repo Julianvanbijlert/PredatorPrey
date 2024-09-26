@@ -56,11 +56,19 @@ namespace Project1
             return (deadEntity, shiftEntity, index);
         }
 
+        /// <summary>
+        /// Shift in an entity in the list from the old index to the new index
+        /// </summary>
         private void ShiftEntity(int oldIndex, int newIndex)
         {
             _entities[newIndex] = _entities[oldIndex];
         }
 
+        /// <summary>
+        /// Add an Entity to the Entity list
+        /// </summary>
+        /// <param name="entity">The entity to add to the list</param>
+        /// <returns>The index on which the new entity was added</returns>
         public int BirthEntity((EntityType, int, int) entity)
         {
             if (k >= _entities.Length)
@@ -73,7 +81,7 @@ namespace Project1
 
             k++;
 
-            return k - 1; //returns the index of the entity AND THEN increases k (hopefully)
+            return k - 1; //return the old value of k, this is where the entity was placed
         }
 
 
@@ -88,6 +96,9 @@ namespace Project1
             return (_entities[index], index);
         }
 
+        /// <summary>
+        /// Get an Entity from the list identified by its index
+        /// </summary>
         public (EntityType, int, int) GetEntity(int index)
         {
             return _entities[index]; 
@@ -109,12 +120,15 @@ namespace Project1
         /// <param name="index">Index of the entity</param>
         /// <param name="newX">New x coordinate</param>
         /// <param name="newY">New y coordinate</param>
-        public void ChangeData(int index, int newX, int newY)
+        public void ChangeLocationData(int index, int newX, int newY)
         {
             (EntityType type, int _, int _) = _entities[index];
             _entities[index] = (type, newX, newY);
         }
 
+        /// <summary>
+        /// Increase the count of the amount of predators or prey depending on the entity
+        /// </summary>
         public void IncreaseEntityCount((EntityType, int, int) entity)
         {
             //increase the amount of predators or prey
@@ -124,6 +138,9 @@ namespace Project1
                 amountOfPrey++;
         }
 
+        /// <summary>
+        /// Decrease the count of the amount of predators or prey depending on the entity
+        /// </summary>
         public void DecreaseEntityCount((EntityType, int, int) entity)
         {
             //decrease the amount of predators or prey
@@ -133,11 +150,19 @@ namespace Project1
                 amountOfPrey--;
         }
 
-
+        /// <summary>
+        /// Amount of entities in the entity list
+        /// </summary>
         public int Count => k;
 
+        /// <summary>
+        /// Amount of Predators in the Entity list
+        /// </summary>
         public int AmountOfPredators => amountOfPredators;
 
+        /// <summary>
+        /// Amount of Prey in the Entity list
+        /// </summary>
         public int AmountOfPrey => amountOfPrey;
     }
 }

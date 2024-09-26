@@ -73,7 +73,7 @@ namespace Project1
         /// <param name="y">The new y coordinate</param>
         public void ChangeLocation((EntityType type, int oldX, int oldY) entity, int index, int x, int y)
         {
-            world.entities.ChangeData(index, x, y);
+            world.entities.ChangeLocationData(index, x, y);
             world.grid[entity.oldX, entity.oldY] = -1;
             world.grid[x, y] = index;
         }
