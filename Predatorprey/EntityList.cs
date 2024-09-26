@@ -20,39 +20,33 @@ namespace Project1
         private int amountOfPredators;
         private int amountOfPrey;
 
-        // reference to world is needed to update index of shifted
-        // entity in grid when an entity is deleted
-        private World _world;
-
         private Random rnd;
 
-        public EntityList(Random rnd, World world)
+        public EntityList(Random rnd)
         {
             _entities = new (EntityType, int, int)[Config.worldSize * Config.worldSize];
             this.rnd = rnd;
             k = 0;
             amountOfPredators = 0;
             amountOfPrey = 0;
-
-            _world = world;
         }
 
-        public void KillEntity(int index)
+        public ((EntityType, int, int) shiftedEntity, int newIndexShiftedEntity) KillEntity(int index)
         {
-            // update the grid
+            // retrieve dead and shifted entities
             (EntityType _, int x, int y) deadEntity = GetEntity(index);
-            (EntityType _, int x, int y) shiftedEntity = GetEntity(k - 1);
-            _world.grid[deadEntity.x, deadEntity.y] = -1;
-            _world.grid[shiftedEntity.x, shiftedEntity.y] = index;
+            (EntityType _, int x, int y) shiftEntity = GetEntity(k - 1);
 
-            //trades places with the last entity and then kills it by decreasing k
+            // shift last living entity to index 
             ShiftEntity(k - 1, index);
 
             // update entity count
             DecreaseEntityCount(deadEntity);
 
-            // update k
+            // update k to signal there is one living entity less
             k--;
+
+            return (shiftEntity, index);
         }
 
         private void ShiftEntity(int oldIndex, int newIndex)

@@ -16,17 +16,8 @@ namespace Project1
         private World _world;
         private EntityManager _entityManager;
         private PlotManager _plotManager;
-        //private Forms _forms;
 
-       
-        class Program
-        {
-            static void Maind()
-            {
-            }
-        }
-
-    public static void Main()
+        public static void Main()
         {
             Simulation s = new Simulation();
             s.Initialize();

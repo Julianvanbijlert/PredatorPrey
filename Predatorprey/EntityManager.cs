@@ -85,8 +85,8 @@ namespace Project1
         /// <param name="index">The index of the entity in the list</param>
         public void RemoveEntity((EntityType type, int x, int y) entity, int index)
         {
-            world.entities.KillEntity(index);
-            world.grid[entity.x, entity.y] = -1;
+            ((EntityType, int, int), int) x = world.entities.KillEntity(index);
+            world.OnRemoveEntity(entity, x.Item1, x.Item2);
         }
     }
 }

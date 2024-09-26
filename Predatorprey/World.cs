@@ -36,7 +36,7 @@ namespace Project1
         {
             this.rnd = rnd;
 
-            entities = new EntityList(rnd, this);
+            entities = new EntityList(rnd);
 
             if(Config.WithSmell) this.smellMap = new SmellMap();
 
@@ -216,16 +216,6 @@ namespace Project1
 
         }
 
-        public (int, int) GetLocationFast(int x, int y)
-        {
-            if (IsAvailableLocation(x + 1, y)) return (x + 1, y);
-            if (IsAvailableLocation(x - 1, y)) return (x - 1, y);
-            if (IsAvailableLocation(x, y + 1)) return (x, y + 1);
-            if (IsAvailableLocation(x, y - 1)) return (x, y - 1);
-
-            return (x, y);
-        }
-
         /// <summary>
         /// Get all locations around the current location that are not off the board.
         /// Could be changed into only up, down, left, right
@@ -253,6 +243,29 @@ namespace Project1
                 }
             }
             return availableLocations;
+        }
+
+        /// <summary>
+        /// Update the grid with info about what changed due to the removing of an entity
+        /// </summary>
+        /// <param name="deadEntity">The entity that was removed</param>
+        /// <param name="shiftedEntity">The entity that got a new index</param>
+        /// <param name="newIndexShiftedEntity">The index that the shifted entity got</param>
+        public void OnRemoveEntity((EntityType, int x, int y) deadEntity, (EntityType, int x, int y) shiftedEntity, int newIndexShiftedEntity)
+        {
+            grid[deadEntity.x, deadEntity.y] = -1;
+            grid[shiftedEntity.x, shiftedEntity.y] = newIndexShiftedEntity;
+        }
+
+        /// <summary>
+        /// Update the index which is stored on the given location
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="newIndex"></param>
+        public void UpdateIndex(int x, int y, int newIndex)
+        {
+            grid[x, y] = newIndex;
         }
 
         /// <summary>
