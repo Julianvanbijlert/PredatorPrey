@@ -253,8 +253,8 @@ namespace Project1
         /// <param name="newIndexShiftedEntity">The index that the shifted entity got</param>
         public void OnRemoveEntity((EntityType, int x, int y) deadEntity, (EntityType, int x, int y) shiftedEntity, int newIndexShiftedEntity)
         {
-            grid[deadEntity.x, deadEntity.y] = -1;
-            grid[shiftedEntity.x, shiftedEntity.y] = newIndexShiftedEntity;
+            grid[deadEntity.x, deadEntity.y] = -1;  // remove dead entity from grid
+            grid[shiftedEntity.x, shiftedEntity.y] = newIndexShiftedEntity;  // change index of shifted entity
         }
 
         /// <summary>

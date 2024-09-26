@@ -31,7 +31,14 @@ namespace Project1
             amountOfPrey = 0;
         }
 
-        public ((EntityType, int, int) shiftedEntity, int newIndexShiftedEntity) KillEntity(int index)
+        /// <summary>
+        /// Remove an entity from the list and shift another to avoid empty spots
+        /// </summary>
+        /// <param name="index">The index of the entity to remove</param>
+        /// <returns>The dead entity, the entity that got shifted in the list and the index
+        /// it got shifted to</returns>
+        public ((EntityType, int, int) deadEntity, (EntityType, int, int) shiftedEntity, 
+            int newIndexShiftedEntity) KillEntity(int index)
         {
             // retrieve dead and shifted entities
             (EntityType _, int x, int y) deadEntity = GetEntity(index);
@@ -46,7 +53,7 @@ namespace Project1
             // update k to signal there is one living entity less
             k--;
 
-            return (shiftEntity, index);
+            return (deadEntity, shiftEntity, index);
         }
 
         private void ShiftEntity(int oldIndex, int newIndex)

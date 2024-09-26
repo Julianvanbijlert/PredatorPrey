@@ -81,12 +81,12 @@ namespace Project1
         /// <summary>
         /// Remove entity from the world (the grid en the Entity list)
         /// </summary>
-        /// <param name="entity">The entity to remove</param>
-        /// <param name="index">The index of the entity in the list</param>
-        public void RemoveEntity((EntityType type, int x, int y) entity, int index)
+        /// <param name="index">The index of the entity to remove in the list</param>
+        public void RemoveEntity(int index)
         {
-            ((EntityType, int, int), int) x = world.entities.KillEntity(index);
-            world.OnRemoveEntity(entity, x.Item1, x.Item2);
+            ((EntityType, int, int) deadEntity, (EntityType, int, int) shiftEntity, int shiftIndex) = 
+                world.entities.KillEntity(index);
+            world.OnRemoveEntity(deadEntity, shiftEntity, shiftIndex);
         }
     }
 }

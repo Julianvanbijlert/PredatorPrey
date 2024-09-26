@@ -161,12 +161,7 @@ namespace Project1
             {
                 if (Attempt.Success(rnd, Config.predationRate))
                 {
-                    (EntityType type, int, int) prey = world.entities.GetEntity(preyIndex);
-                    if (prey.type != EntityType.Prey)
-                    {
-                        int hiwfhwf = 0;
-                    }
-                    Predation(prey, preyIndex);
+                    Predation(preyIndex);
                 }
             }
         }
@@ -193,20 +188,14 @@ namespace Project1
         /// Do predation on a prey 
         /// </summary>
         /// <param name="p">The prey to kill</param>
-        private void Predation((EntityType type, int x, int y) prey, int preyIndex)
+        private void Predation(int preyIndex)
         {
-            if (prey.type != EntityType.Prey)
-            {
-                int efjiejef = 0;
-            }
-
-            if (world.entities.GetEntity(preyIndex).Item1 != EntityType.Prey)
-            {
-                int haicahsouoih = 0;
-            }
+            // check whether the assumption holds that the entity is a prey
+            if (world.entities.GetEntityType(preyIndex) != EntityType.Prey)
+                throw new ArgumentException("A non-prey entity is being preyed on.");
 
             // kill Prey and birth new Predator
-            entityManager.RemoveEntity(prey, preyIndex);
+            entityManager.RemoveEntity(preyIndex);
             entityManager.BirthEntity(_currentEntity);
         }
 
@@ -216,7 +205,7 @@ namespace Project1
         protected void AttemptDeath()
         {
             if (Attempt.Success(rnd, Config.deathRate)) 
-                entityManager.RemoveEntity(_currentEntity, _currentEntityIndex);
+                entityManager.RemoveEntity(_currentEntityIndex);
         }
 
     }
