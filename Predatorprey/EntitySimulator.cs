@@ -78,24 +78,31 @@ namespace Project1
         protected virtual (int, int) GetNextSpot()
         {
             List<(int, int)> possibleLocations = new List<(int, int)>();
-            for (int dx = -1; dx <= 1; dx++)
-            {
-                for (int dy = -1; dy <= 1; dy++)
-                {
-                    int locationX = _currentEntity.x + dx;
-                    int locationY = _currentEntity.y + dy;
 
-                    if (world.IsAvailableLocation(locationX, locationY))
-                        possibleLocations.Add((locationX, locationY));
-                }
-            }
+            // up
+            AddIfAvailableLocation(possibleLocations, _currentEntity.x, _currentEntity.y + 1);
+            // right
+            AddIfAvailableLocation(possibleLocations, _currentEntity.x + 1, _currentEntity.y);
+            // down
+            AddIfAvailableLocation(possibleLocations, _currentEntity.x, _currentEntity.y - 1);
+            // left
+            AddIfAvailableLocation(possibleLocations, _currentEntity.x - 1, _currentEntity.y);
 
             // if no possible locations, return current location
             if (possibleLocations.Count == 0)
                 return (_currentEntity.x, _currentEntity.y);
 
-            // else pick up random option
+            // else pick a random option
             return possibleLocations[rnd.Next(possibleLocations.Count)];
+        }
+
+        /// <summary>
+        /// Add the location to the list if it is available
+        /// </summary>
+        private void AddIfAvailableLocation(List<(int, int)> l, int x, int y)
+        {
+            if(world.IsAvailableLocation(x, y)) 
+                l.Add((x, y));
         }
 
         /// <summary>
