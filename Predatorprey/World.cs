@@ -173,51 +173,12 @@ namespace Project1
         }
 
         /// <summary>
-        /// Get a random available location within the range of the given location
+        /// Update the grid when an entity moves from one location to the other
         /// </summary>
-        /// <returns>The coordinates of the random location</returns>
-        public (int, int) GetLocationNext(int x, int y)
+        public void OnMoveEntity(int oldX, int oldY, int newX, int newY)
         {
-            //get all locations around the current location that are not off the board
-            List<(int, int)> availableLocations = GetAvailableLocations(x, y);
-
-            //pick one of the locations randomly
-            if(availableLocations.Count > 0)
-                return availableLocations[rnd.Next(availableLocations.Count)];  
-            
-
-            //no squares around the current location are available
-            return (x, y);
-
-        }
-
-        /// <summary>
-        /// Get all locations around the current location that are not off the board.
-        /// Could be changed into only up, down, left, right
-        /// </summary>
-        private List<(int, int)> GetAvailableLocations(int x, int y)
-        {
-            int newx, newy;
-            //how far the entity can walk
-            int dist = Config.walkDistance;
-
-            List<(int, int)> availableLocations = new List<(int, int)>();
-
-
-            for (int i = -dist; i <= dist; i++)
-            {
-                for (int j = -dist; j <= dist; j++)
-                {
-                    newy = y + i;
-                    newx = x + j;
-
-                    if (IsAvailableLocation(newx, newy))
-                    {
-                        availableLocations.Add((newx, newy));
-                    }
-                }
-            }
-            return availableLocations;
+            grid[newX, newY] = grid[oldX, oldY];
+            grid[oldX, oldY] = -1;
         }
 
         /// <summary>
@@ -230,17 +191,6 @@ namespace Project1
         {
             grid[deadEntity.x, deadEntity.y] = -1;  // remove dead entity from grid
             grid[shiftedEntity.x, shiftedEntity.y] = newIndexShiftedEntity;  // change index of shifted entity
-        }
-
-        /// <summary>
-        /// Update the index which is stored on the given location
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="newIndex"></param>
-        public void UpdateIndex(int x, int y, int newIndex)
-        {
-            grid[x, y] = newIndex;
         }
 
         /// <summary>

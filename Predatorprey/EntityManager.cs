@@ -42,7 +42,7 @@ namespace Project1
         }
 
         /// <summary>
-        /// Add the given entity to the world
+        /// Add the given entity to the world and its entity list
         /// </summary>
         /// <param name="entity">The entity to add</param>
         public void AddEntity((EntityType, int x, int y) entity)
@@ -74,12 +74,11 @@ namespace Project1
         public void ChangeLocation((EntityType type, int oldX, int oldY) entity, int index, int x, int y)
         {
             world.entities.ChangeLocationData(index, x, y);
-            world.grid[entity.oldX, entity.oldY] = -1;
-            world.grid[x, y] = index;
+            world.OnMoveEntity(entity.oldX, entity.oldY, x, y);
         }
 
         /// <summary>
-        /// Remove entity from the world (the grid en the Entity list)
+        /// Remove entity from the world (the grid and the Entity list)
         /// </summary>
         /// <param name="index">The index of the entity to remove in the list</param>
         public void RemoveEntity(int index)
