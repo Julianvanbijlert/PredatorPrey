@@ -29,7 +29,7 @@ namespace Project1
         /// </summary>
         private void Initialize()
         {
-            Random r = new Random(201);
+            Random r = new Random(515615);
 
             _world = new World(r);
             _entityManager = new EntityManager(_world, r);
@@ -66,6 +66,7 @@ namespace Project1
             {
                 // choose a random entity
                 ((EntityType type, int, int) entity, int index) tuple = _world.entities.GetRandomEntity();
+
                 // let the entities do actions
                 if (tuple.entity.type == EntityType.Predator)
                 {

@@ -17,7 +17,7 @@ namespace Project1
         public const int smellDistance = 1;
 
 
-        public const double predationRate = 1;
+        public const double predationRate = 0.2;
 
         public const int smellStrength = 5;
 
