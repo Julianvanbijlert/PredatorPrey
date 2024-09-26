@@ -53,22 +53,6 @@ namespace Project1
 
         public abstract void AttemptActions();
 
-        /// <summary>
-        /// Attempt to move to a different location.
-        /// The new location can be anywhere on the grid with an uniform chance.
-        /// </summary>
-        protected void AttemptWalkSlow()
-        {
-            if (Attempt.Success(rnd, Config.walkRate))
-            {
-                (int newX, int newY) = world.GetLocationNext(_currentEntity.x, _currentEntity.y);
-
-                entityManager.ChangeLocation(_currentEntity, _currentEntityIndex, newX, newY);
-
-
-            }
-        }
-
 
         protected void AttemptWalk()
         {
