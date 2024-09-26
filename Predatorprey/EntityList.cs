@@ -93,7 +93,7 @@ namespace Project1
         public ((EntityType, int, int), int) GetRandomEntity()
         {
             int index = rnd.Next(0, k);
-            return (_entities[index], index);
+            return (GetEntity(index), index);
         }
 
         /// <summary>

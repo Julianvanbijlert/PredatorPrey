@@ -44,9 +44,8 @@ namespace Project1
         /// <summary>
         /// Set the currently used entity in the variables
         /// </summary>
-        /// <param name="entity">The entity to use</param>
         /// <param name="entityIndex">The index of the entity in the entity list</param>
-        public void SetCurrentEntity((EntityType, int, int) entity, int entityIndex)
+        public void SetCurrentEntity(int entityIndex)
         {
             _currentEntityIndex = entityIndex;
         }
@@ -62,6 +61,9 @@ namespace Project1
             }
         }
 
+        /// <summary>
+        /// Do a random walk with walkDistance (from config) steps
+        /// </summary>
         private void Walk()
         {
             for (int i = 0; i < Config.walkDistance; i++)
@@ -73,7 +75,7 @@ namespace Project1
         }
 
         /// <summary>
-        /// Let predator or prey pick a next, neighboring spot to walk to
+        /// Let entity pick a next, neighboring spot to walk to
         /// </summary>
         protected virtual (int, int) GetNextSpot()
         {
@@ -157,6 +159,9 @@ namespace Project1
             AttemptPredationOnOneLocation(_currentEntity.x - 1, _currentEntity.y);
         }
 
+        /// <summary>
+        /// Attempt to predate on the prey on this location if there is a prey there
+        /// </summary>
         private void AttemptPredationOnOneLocation(int x, int y)
         {
             // get the index of the prey on the location. If no prey exists there, -1 is returned.
@@ -247,7 +252,8 @@ namespace Project1
 
         private void AttemptBirth()
         {
-            if(Attempt.Success(rnd, Config.birthRate)) entityManager.BirthEntity(_currentEntity);
+            if(Attempt.Success(rnd, Config.birthRate)) 
+                entityManager.BirthEntity(_currentEntity);
         }
     }
 }

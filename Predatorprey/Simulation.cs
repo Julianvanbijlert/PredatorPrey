@@ -69,12 +69,12 @@ namespace Project1
                 // let the entities do actions
                 if (tuple.entity.type == EntityType.Predator)
                 {
-                    _predatorSimulator.SetCurrentEntity(tuple.entity, tuple.index);
+                    _predatorSimulator.SetCurrentEntity(tuple.index);
                     _predatorSimulator.AttemptActions();
                 }
                 else
                 {
-                    _preySimulator.SetCurrentEntity(tuple.entity, tuple.index);
+                    _preySimulator.SetCurrentEntity(tuple.index);
                     _preySimulator.AttemptActions();
                 }
             }
