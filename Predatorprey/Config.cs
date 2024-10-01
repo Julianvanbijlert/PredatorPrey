@@ -32,5 +32,6 @@ namespace Project1
         /// True if the simulation has smell mechanic enabled, else false
         /// </summary>
         public const bool WithSmell = false;
+        public const bool WithPrint = false;
     }
 }

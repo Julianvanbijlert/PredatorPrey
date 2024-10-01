@@ -44,37 +44,23 @@
             // Only draw if data has been loaded into the buffer
             if (dataLoaded) {
                 background(220);  // Clear the canvas
-                drawPrey();
-                drawPredator();
+                drawEntity('green', preyBuffer);
+                drawEntity('red', predatorBuffer);
             }
         }
 
-        function drawPrey() {
-            stroke('green');
+
+        function drawEntity(color, a){
+            array = a;
+            stroke(color);
             let prevX = 0;
             let prevY = height;  // Start from the bottom
             let nextX = 0;
             let nextY = height;  // Start from the bottom
 
-            for (let i = 0; i < preyBuffer.length; i++) {
-                nextX = i / preyBuffer.length * width;
-                nextY = height - (preyBuffer[i] / size * height);  // Invert the y-coordinate
-                line(prevX, prevY, nextX, nextY);
-                prevX = nextX;
-                prevY = nextY;
-            }
-        }
-
-        function drawPredator() {
-            stroke('red');
-            let prevX = 0;
-            let prevY = height;  // Start from the bottom
-            let nextX = 0;
-            let nextY = height;  // Start from the bottom
-
-            for (let i = 0; i < predatorBuffer.length; i++) {
-                nextX = i / predatorBuffer.length * width;
-                nextY = height - (predatorBuffer[i] / size * height);  // Invert the y-coordinate
+            for (let i = 0; i < array.length; i++) {
+                nextX = i / array.length * width;
+                nextY = height - (array[i] / size * height);  // Invert the y-coordinate
                 line(prevX, prevY, nextX, nextY);
                 prevX = nextX;
                 prevY = nextY;
@@ -106,7 +92,7 @@
         setInterval(() => {
             console.log("Reloading JSON file...");
             GetData();
-        }, 3000);  // You can adjust the interval time
+        }, 8000);  // You can adjust the interval time
     </script>
 </body>
 </html>

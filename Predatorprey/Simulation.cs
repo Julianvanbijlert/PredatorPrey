@@ -49,7 +49,7 @@ namespace Project1
             for (int i = 0; i < Config.amountOfRounds; i++)
             {
                 Round(i);
-
+                
                 _plotManager.SaveJson();
             }
 
@@ -89,7 +89,8 @@ namespace Project1
             //Output.PrintList(_world);
 
             SaveStats(round);
-            _world.PrintStats();
+            if(Config.WithPrint)
+                _world.PrintStats();
         }
 
         public void SaveStats(int round)
