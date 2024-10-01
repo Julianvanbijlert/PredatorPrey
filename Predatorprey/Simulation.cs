@@ -49,6 +49,8 @@ namespace Project1
             for (int i = 0; i < Config.amountOfRounds; i++)
             {
                 Round(i);
+
+                _plotManager.SaveJson();
             }
 
             _plotManager.SavePlot();

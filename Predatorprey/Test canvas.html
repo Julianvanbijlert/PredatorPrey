@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>p5.js and C# API with Buffered Data</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <script>
+        let drawingData;
+        let prey = [];
+        let predator = [];
+        const size = 512 * 512;
+        const width = 600;
+        const height = 600;
+        let dataLoaded = false;
+
+        const filepath = 'http://localhost:8000/JSON/output.json';
+        
+        // Buffer to store prey and predator data before drawing
+        let preyBuffer = [];
+        let predatorBuffer = [];
+
+        function setup() {
+            createCanvas(width , height);
+            background(220);
+            GetData();  // Load data once and store it in the buffer
+        }
+    
+        function updateDrawing(data) {
+            drawingData = JSON.parse(data);
+            preyBuffer = drawingData.prey;
+            predatorBuffer = drawingData.predator;
+            dataLoaded = true;  // Mark data as loaded
+            console.log("Drawing data updated:", drawingData);
+        }
+
+        function errorCallback(err) {
+            console.error("Failed to load JSON:", err);
+        }
+    
+        function draw() {
+            // Only draw if data has been loaded into the buffer
+            if (dataLoaded) {
+                background(220);  // Clear the canvas
+                drawPrey();
+                drawPredator();
+            }
+        }
+
+        function drawPrey() {
+            stroke('green');
+            let prevX = 0;
+            let prevY = height;  // Start from the bottom
+            let nextX = 0;
+            let nextY = height;  // Start from the bottom
+
+            for (let i = 0; i < preyBuffer.length; i++) {
+                nextX = i / preyBuffer.length * width;
+                nextY = height - (preyBuffer[i] / size * height);  // Invert the y-coordinate
+                line(prevX, prevY, nextX, nextY);
+                prevX = nextX;
+                prevY = nextY;
+            }
+        }
+
+        function drawPredator() {
+            stroke('red');
+            let prevX = 0;
+            let prevY = height;  // Start from the bottom
+            let nextX = 0;
+            let nextY = height;  // Start from the bottom
+
+            for (let i = 0; i < predatorBuffer.length; i++) {
+                nextX = i / predatorBuffer.length * width;
+                nextY = height - (predatorBuffer[i] / size * height);  // Invert the y-coordinate
+                line(prevX, prevY, nextX, nextY);
+                prevX = nextX;
+                prevY = nextY;
+            }
+        }
+
+        function gotData(data) {
+            console.log("JSON loaded:");  
+            updateDrawing(data);
+        }
+
+        function GetData(){
+            fetch(filepath)  // Replace with your actual file path
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.text();  // Or response.json() if the file is JSON
+                })
+                .then(data => {
+                    gotData(data);
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+        }
+
+        // Optionally, reload the file every few seconds (if needed)
+        setInterval(() => {
+            console.log("Reloading JSON file...");
+            GetData();
+        }, 3000);  // You can adjust the interval time
+    </script>
+</body>
+</html>

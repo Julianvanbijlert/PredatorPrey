@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="JSON\server.py" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ScottPlot" Version="5.0.39" />
   </ItemGroup>
 
