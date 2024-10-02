@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Project1
 {
-    public enum Direction { Up, Right, Down, Left }
+    public enum Direction { Null, Up, Right, Down, Left }
 
 
     public class TracksMap
@@ -112,6 +112,14 @@ namespace Project1
         private bool IsWithinTracksMap(int x, int y)
         {
             return x >= 0 && x < Config.worldSize && y >= 0 && y < Config.worldSize;
+        }
+
+        /// <summary>
+        /// Get the direction stored on the given location
+        /// </summary>
+        public Direction GetDirection(int x, int y)
+        {
+            return _directionsMap[x, y];
         }
 
         public bool AnyWithTrack()

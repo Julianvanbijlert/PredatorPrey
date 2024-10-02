@@ -179,17 +179,27 @@ namespace Project1
             if(!Config.WithTracks) 
                 return base.GetNextSpot();
 
-            // get neighbor locations with highest track values
-            List<(int x, int y)> highestTracks = tracksMap.GetHighestSurroundingTracks(_currentEntity.x, _currentEntity.y);
+            (int newX, int newY) = world.tracksMap.GetSurroundingHigherTrack(_currentEntity.x, _currentEntity.y);
+            if (!(newX == _currentEntity.x && newY == _currentEntity.y))
+                return (newX, newY);
 
-            List<(int, int)> possibleLocations = highestTracks.FindAll(location => world.IsEmptyCell(location.x, location.y));
+            Direction direction = world.tracksMap.GetDirection(_currentEntity.x, _currentEntity.y);
 
-            // if you have no options, return current location
-            if (possibleLocations.Count == 0)
-                return (_currentEntity.x , _currentEntity.y);
-
-            // else, choose a random option
-            return possibleLocations[rnd.Next(possibleLocations.Count)];
+            switch (direction)
+            {
+                case Direction.Null: // no direction, go to a random other available location
+                    return base.GetNextSpot();
+                case Direction.Up:
+                    return (_currentEntity.x, _currentEntity.y + 1);
+                case Direction.Right:
+                    return (_currentEntity.x + 1, _currentEntity.y);
+                case Direction.Down:
+                    return (_currentEntity.x, _currentEntity.y - 1);
+                case Direction.Left:
+                    return (_currentEntity.x - 1, _currentEntity.y);
+                default:
+                    throw new Exception("Something went wrong with interpreting the direction");
+            }
         }
 
         /// <summary>
