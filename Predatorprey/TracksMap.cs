@@ -59,62 +59,6 @@ namespace Project1
         }
 
         /// <summary>
-        /// Get a random surrounding higher track location. If there is no such location, return the current location.
-        /// </summary>
-        /// <param name="x">The x of the original location</param>
-        /// <param name="y">The y of the original location</param>
-        /// <returns>A random location with higher track or the given location if no such location exists</returns>
-        public (int, int) GetSurroundingHigherTrack(int x, int y)
-        {
-            int highestTrack = _tracksMap[x, y];
-
-            List<(int, int)> highTrackLocations = new List<(int, int)>();
-
-            // up
-            LookForHigherTrack(x, y + 1, highTrackLocations, ref highestTrack);
-            // right
-            LookForHigherTrack(x + 1, y, highTrackLocations, ref highestTrack);
-            // down
-            LookForHigherTrack(x, y - 1, highTrackLocations, ref highestTrack);
-            // left
-            LookForHigherTrack(x - 1, y, highTrackLocations, ref highestTrack);
-
-            // if the original value remained, ensure that the original location is returned
-            if (highestTrack == _tracksMap[x, y])
-                return (x, y);
-
-            // choose a random location from the list
-            return highTrackLocations[rnd.Next(highTrackLocations.Count)];
-        }
-
-        /// <summary>
-        /// Compare given location with the highest track. Update list with highest track locations.
-        /// </summary>
-        public void LookForHigherTrack(int x, int y, List<(int, int)> highTracks, ref int highestTrack)
-        {
-            // Check whether location is on the map
-            if (!IsWithinTracksMap(x, y)) return;
-
-            if (_tracksMap[x, y] > highestTrack)
-            {
-                // new highest track is found, reset list and highestTrack value
-                highTracks.Clear();
-                highTracks.Add((x, y));
-                highestTrack = _tracksMap[x, y];
-            }
-            else if (_tracksMap[x, y] == highestTrack)
-            {
-                // equal track is found, add to list
-                highTracks.Add((x, y));
-            }
-        }
-
-        private bool IsWithinTracksMap(int x, int y)
-        {
-            return x >= 0 && x < Config.worldSize && y >= 0 && y < Config.worldSize;
-        }
-
-        /// <summary>
         /// Get the direction stored on the given location
         /// </summary>
         public Direction GetDirection(int x, int y)

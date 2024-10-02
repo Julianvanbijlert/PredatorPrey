@@ -197,6 +197,54 @@ namespace Project1
             // index in the grid is -1 after this method returns.
         }
 
+
+        /// <summary>
+        /// Get all surrounding locations with the highest tracks
+        /// </summary>
+        /// <param name="x">The x of the original location</param>
+        /// <param name="y">The y of the original location</param>
+        /// <returns>All surrounding locations with the highest tracks</returns>
+        public List<(int, int)> GetSurroundingHighestTracks(int x, int y)
+        {
+            int highestTrack = int.MinValue;
+
+            List<(int, int)> highTrackLocations = new List<(int, int)>();
+
+            // up
+            LookForHigherTrack(x, y + 1, highTrackLocations, ref highestTrack);
+            // right
+            LookForHigherTrack(x + 1, y, highTrackLocations, ref highestTrack);
+            // down
+            LookForHigherTrack(x, y - 1, highTrackLocations, ref highestTrack);
+            // left
+            LookForHigherTrack(x - 1, y, highTrackLocations, ref highestTrack);
+
+            return highTrackLocations;
+        }
+
+        /// <summary>
+        /// Compare given location with the highest track. Update list with highest track locations.
+        /// </summary>
+        public void LookForHigherTrack(int x, int y, List<(int, int)> highTracks, ref int highestTrack)
+        {
+            // Check whether location is available
+            if (!IsAvailableLocation(x, y)) return;
+
+            if (tracksMap.GetTrack(x, y) > highestTrack)
+            {
+                // new highest track is found, reset list and highestTrack value
+                highTracks.Clear();
+                highTracks.Add((x, y));
+                highestTrack = tracksMap.GetTrack(x, y);
+            }
+            else if (tracksMap.GetTrack(x, y) == highestTrack)
+            {
+                // equal track is found, add to list
+                highTracks.Add((x, y));
+            }
+        }
+
+
         /// <summary>
         /// Prints the amount of entities, predators and prey in the world
         /// </summary>

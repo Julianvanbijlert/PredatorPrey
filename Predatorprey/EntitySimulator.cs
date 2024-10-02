@@ -179,22 +179,40 @@ namespace Project1
             if(!Config.WithTracks) 
                 return base.GetNextSpot();
 
-            (int newX, int newY) = world.tracksMap.GetSurroundingHigherTrack(_currentEntity.x, _currentEntity.y);
-            // if there is no neighboring location with higher tracks, follow the current track or walk randomly
-            if (!(newX == _currentEntity.x && newY == _currentEntity.y))
-                return (newX, newY);
 
+
+            // these locations are guaranteed to have the highest track of all neighboring locations.
+            List<(int, int)> highTracksLocations = world.GetSurroundingHighestTracks(_currentEntity.x, _currentEntity.y);
+
+            // no available locations at all. Return the current location.
+            if (highTracksLocations.Count == 0)
+                return (_currentEntity.x, _currentEntity.y);
+
+            // pick a random location with high tracks
+            (int x, int y) highTracksLocation = highTracksLocations[rnd.Next(highTracksLocations.Count)];
+
+            // if the highest track is higher than the current, go to the higher tracks location
+            if (world.tracksMap.GetTrack(highTracksLocation.x, highTracksLocation.y) 
+                > world.tracksMap.GetTrack(_currentEntity.x, _currentEntity.y))
+                return highTracksLocation;
+
+
+
+            // else try to follow the direction on the current location
             Direction direction = world.tracksMap.GetDirection(_currentEntity.x, _currentEntity.y);
 
-            // no direction, go to a random other available location
+            // if there is no direction on current location, go to a random
+            // other available location with high track
             if (direction == Direction.Null)
-                return base.GetNextSpot();
+                return highTracksLocation;
 
-            (newX, newY) = DirectionToLocation(direction);
+            (int newX, int newY) = DirectionToLocation(direction);
+            // if the location the direction points to is available, go there
             if (world.IsAvailableLocation(newX, newY))
                 return (newX, newY);
 
-            return base.GetNextSpot();
+            // else go to the random high tracks location
+            return highTracksLocation;
         }
 
         /// <summary>
