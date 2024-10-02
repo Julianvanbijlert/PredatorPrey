@@ -63,6 +63,8 @@ namespace Project1
         /// </summary>
         public Direction GetDirection(int x, int y)
         {
+            // hide actual value if the track has disappeared
+            if (_tracksMap[x, y] <= 0) return Direction.Null;
             return _directionsMap[x, y];
         }
 
