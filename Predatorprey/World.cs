@@ -38,7 +38,7 @@ namespace Project1
 
             entities = new EntityList(rnd);
 
-            if(Config.WithTracks) this.tracksMap = new TracksMap();
+            if(Config.WithTracks) this.tracksMap = new TracksMap(rnd);
 
             InitializeGrid();
         }

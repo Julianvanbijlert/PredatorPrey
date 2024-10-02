@@ -180,15 +180,30 @@ namespace Project1
                 return base.GetNextSpot();
 
             (int newX, int newY) = world.tracksMap.GetSurroundingHigherTrack(_currentEntity.x, _currentEntity.y);
+            // if there is no neighboring location with higher tracks, follow the current track or walk randomly
             if (!(newX == _currentEntity.x && newY == _currentEntity.y))
                 return (newX, newY);
 
             Direction direction = world.tracksMap.GetDirection(_currentEntity.x, _currentEntity.y);
 
+            // no direction, go to a random other available location
+            if (direction == Direction.Null)
+                return base.GetNextSpot();
+
+            (newX, newY) = DirectionToLocation(direction);
+            if (world.IsAvailableLocation(newX, newY))
+                return (newX, newY);
+
+            return base.GetNextSpot();
+        }
+
+        /// <summary>
+        /// Translate a relative direction to an absolute location
+        /// </summary>
+        private (int, int) DirectionToLocation(Direction direction)
+        {
             switch (direction)
             {
-                case Direction.Null: // no direction, go to a random other available location
-                    return base.GetNextSpot();
                 case Direction.Up:
                     return (_currentEntity.x, _currentEntity.y + 1);
                 case Direction.Right:
@@ -198,7 +213,7 @@ namespace Project1
                 case Direction.Left:
                     return (_currentEntity.x - 1, _currentEntity.y);
                 default:
-                    throw new Exception("Something went wrong with interpreting the direction");
+                    throw new Exception("Something went wrong interpreting the direction.");
             }
         }
 
@@ -256,8 +271,28 @@ namespace Project1
 
         protected override void WalkOneStep(int newX, int newY)
         {
-            if(Config.WithTracks) world.tracksMap.AddTrack(_currentEntity.x, _currentEntity.y);
+            if (Config.WithTracks)
+            {
+                Direction direction = LocationsToDirection(_currentEntity.x, _currentEntity.y, newX, newY);
+                world.tracksMap.AddTrack(_currentEntity.x, _currentEntity.y, direction);
+            }
             base.WalkOneStep(newX, newY);
+        }
+
+        /// <summary>
+        /// Translate two (assumed neighboring) locations into a direction
+        /// </summary>
+        private Direction LocationsToDirection(int oldX, int oldY, int newX, int newY)
+        {
+            int diffX = newX - oldX;
+            if (diffX == -1) return Direction.Left;
+            else if (diffX == 1) return Direction.Right;
+
+            int diffY = newY - oldY;
+            if (diffY == -1) return Direction.Down;
+            if (diffY == 1) return Direction.Up;
+
+            throw new ArgumentException("The two locations are not neighboring.");
         }
 
         private void AttemptBirth()
