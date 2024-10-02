@@ -14,12 +14,12 @@ namespace Project1
         public const double birthRate = 0.6;
         public const double walkRate = 0.1;
         public const int walkDistance = 5;
-        public const int smellDistance = 1;
+        public const int trackDistance = 1;
 
 
         public const double predationRate = 0.2;
 
-        public const int smellStrength = 5;
+        public const int tracksStrength = 5;
 
         public const double preditorDensity = 0.15;
         public const double preyDensity = 0.15;
@@ -29,9 +29,9 @@ namespace Project1
         public const int BlockSize = worldSize / 10;
 
         /// <summary>
-        /// True if the simulation has smell mechanic enabled, else false
+        /// True if the simulation has tracking mechanic enabled, else false
         /// </summary>
-        public const bool WithSmell = false;
+        public const bool WithTracks = true;
         public const bool WithPrint = false;
     }
 }

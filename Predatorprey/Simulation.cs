@@ -82,7 +82,7 @@ namespace Project1
                 }
             }
 
-            if(Config.WithSmell) _world.smellMap.DecreaseSmells();
+            if(Config.WithTracks) _world.tracksMap.DecreaseTracks();
 
             // print the world
             //Output.PrintWorld(_world);

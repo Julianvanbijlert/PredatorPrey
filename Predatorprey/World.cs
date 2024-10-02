@@ -26,7 +26,7 @@ namespace Project1
         public EntityList entities { get; private set; }
 
 
-        public SmellMap smellMap { get; private set; }
+        public TracksMap tracksMap { get; private set; }
 
         /// <summary>
         /// Represents the world with a grid and the entities on it.
@@ -38,7 +38,7 @@ namespace Project1
 
             entities = new EntityList(rnd);
 
-            if(Config.WithSmell) this.smellMap = new SmellMap();
+            if(Config.WithTracks) this.tracksMap = new TracksMap();
 
             InitializeGrid();
         }

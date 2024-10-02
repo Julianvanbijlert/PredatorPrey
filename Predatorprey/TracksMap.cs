@@ -7,42 +7,42 @@ using System.Threading.Tasks;
 
 namespace Project1
 {
-    public class SmellMap
+    public class TracksMap
     {
-        public int[,] _smellMap;
+        public int[,] _tracksMap;
 
-        public SmellMap()
+        public TracksMap()
         {
-            _smellMap = new int[Config.worldSize, Config.worldSize];
+            _tracksMap = new int[Config.worldSize, Config.worldSize];
         }
 
-        public void AddSmell(int x, int y)
+        public void AddTrack(int x, int y)
         {
-            _smellMap[x, y] = Config.smellStrength;
+            _tracksMap[x, y] = Config.tracksStrength;
         }
 
-        public int GetSmell(int x, int y)
+        public int GetTrack(int x, int y)
         {
-            return _smellMap[x, y];
+            return _tracksMap[x, y];
         }
 
-        private void DecreaseSmell(int x, int y)
+        private void DecreaseTrack(int x, int y)
         {
-            _smellMap[x, y]--;
+            _tracksMap[x, y]--;
         }
 
         /// <summary>
-        /// Decrease all smells in the world by 1
+        /// Decrease all tracks in the world by 1
         /// </summary>
-        public void DecreaseSmells()
+        public void DecreaseTracks()
         {
             for (int y = 0; y < Config.worldSize; y++)
             {
                 for (int x = 0; x < Config.worldSize; x++)
                 {
-                    if (_smellMap[x, y] > 0)
+                    if (_tracksMap[x, y] > 0)
                     {
-                        DecreaseSmell(x, y);
+                        DecreaseTrack(x, y);
                     }
                 }
             }
@@ -50,15 +50,15 @@ namespace Project1
 
         /// <summary>
         /// Return a list of coordinates with locations, all of which have the
-        /// same, highest, smell number
+        /// same, highest, track number
         /// </summary>
         /// <param name="x">X of the queried location</param>
         /// <param name="y">Y of the queried location</param>
-        /// <returns>List of locations with the highest smell numbers</returns>
-        public List<(int, int)> GetHighestSurroundingSmells(int x, int y)
+        /// <returns>List of locations with the highest track numbers</returns>
+        public List<(int, int)> GetHighestSurroundingTracks(int x, int y)
         {
-            // keep track of highest smell value and smell list
-            int maxSmell = int.MinValue;
+            // keep track of highest track value and track list
+            int maxTrack = int.MinValue;
             List<(int, int)> result = new List<(int, int)>();
 
             for (int dx = -1; dx <= 1; dx++)
@@ -72,15 +72,15 @@ namespace Project1
                     if (!World.IsWithinGrid(locationX, locationY))
                         continue;
 
-                    // new highest sell is found. Reset smell value and list.
-                    if (_smellMap[locationX, locationY] > maxSmell)
+                    // new highest sell is found. Reset track value and list.
+                    if (_tracksMap[locationX, locationY] > maxTrack)
                     {
-                        maxSmell = _smellMap[locationX, locationY];
+                        maxTrack = _tracksMap[locationX, locationY];
                         result.Clear();
                         result.Add((locationX, locationY));
                     }
-                    // location has (not unique) highest smell
-                    else if (_smellMap[locationX, locationY] == maxSmell)
+                    // location has (not unique) highest track
+                    else if (_tracksMap[locationX, locationY] == maxTrack)
                     {
                         result.Add((locationX, locationY));
                     }
@@ -90,9 +90,9 @@ namespace Project1
             return result;
         }
 
-        public bool AnyWithSmell()
+        public bool AnyWithTrack()
         {
-            foreach (int x in _smellMap)
+            foreach (int x in _tracksMap)
             {
                 if (x > 0) return true;
             }

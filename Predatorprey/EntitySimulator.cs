@@ -31,14 +31,14 @@ namespace Project1
 
         protected Random rnd { get; private set; }
 
-        protected SmellMap smellMap { get; private set; }
+        protected TracksMap tracksMap { get; private set; }
 
         public EntitySimulator(EntityManager entityManager, Random rnd)
         {
             this.entityManager = entityManager;
             this.world = entityManager.world;
             this.rnd = rnd;
-            this.smellMap = world.smellMap;
+            this.tracksMap = world.tracksMap;
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Project1
 
         /// <summary>
         /// Let entity walk one step to new location.
-        /// Method is handy for deploying smell if needed
+        /// Method is handy for deploying tracks if needed
         /// </summary>
         protected virtual void WalkOneStep(int newX, int newY)
         {
@@ -176,13 +176,13 @@ namespace Project1
 
         protected override (int, int) GetNextSpot()
         {
-            if(!Config.WithSmell) 
+            if(!Config.WithTracks) 
                 return base.GetNextSpot();
 
-            // get neighbor locations with highest smell values
-            List<(int x, int y)> highestSmells = smellMap.GetHighestSurroundingSmells(_currentEntity.x, _currentEntity.y);
+            // get neighbor locations with highest track values
+            List<(int x, int y)> highestTracks = tracksMap.GetHighestSurroundingTracks(_currentEntity.x, _currentEntity.y);
 
-            List<(int, int)> possibleLocations = highestSmells.FindAll(location => world.IsEmptyCell(location.x, location.y));
+            List<(int, int)> possibleLocations = highestTracks.FindAll(location => world.IsEmptyCell(location.x, location.y));
 
             // if you have no options, return current location
             if (possibleLocations.Count == 0)
@@ -246,7 +246,7 @@ namespace Project1
 
         protected override void WalkOneStep(int newX, int newY)
         {
-            if(Config.WithSmell) world.smellMap.AddSmell(_currentEntity.x, _currentEntity.y);
+            if(Config.WithTracks) world.tracksMap.AddTrack(_currentEntity.x, _currentEntity.y);
             base.WalkOneStep(newX, newY);
         }
 
