@@ -29,7 +29,7 @@ namespace Project1
         /// </summary>
         private void Initialize()
         {
-            Random r = new Random(515615);
+            Random r = GetNewRandom();
 
             _world = new World(r);
             _entityManager = new EntityManager(_world, r);
@@ -39,6 +39,19 @@ namespace Project1
             
 
             _entityManager.InitializeEntities();
+        }
+
+        /// <summary>
+        /// Get a Random object based on the seed in Config
+        /// </summary>
+        private Random GetNewRandom()
+        {
+            if(Config.rndSeed != -1)
+                return new Random(Config.rndSeed);
+
+            // -1 signals you want a random seed, so do not specify the seed
+            // when making the Random object.
+            return new Random();
         }
 
         /// <summary>

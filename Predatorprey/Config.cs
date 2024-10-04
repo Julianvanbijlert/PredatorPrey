@@ -32,6 +32,12 @@ namespace Project1
         /// True if the simulation has tracking mechanic enabled, else false
         /// </summary>
         public const bool WithTracks = true;
-        public const bool WithPrint = false;
+        public const bool WithPrint = true;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+        public const int rndSeed = 420460;
     }
 }

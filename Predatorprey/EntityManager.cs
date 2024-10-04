@@ -61,6 +61,10 @@ namespace Project1
             (int, int)? location = world.GetBirthLocation(parent.x, parent.y);
             if (!location.HasValue) return;
             (int x, int y) = location.Value;
+
+            if (!world.IsAvailableLocation(x, y))
+                throw new Exception("Birth location is not available.");
+
             AddEntity((parent.type, x, y));
         }
 
@@ -73,6 +77,9 @@ namespace Project1
         /// <param name="y">The new y coordinate</param>
         public void ChangeLocation((EntityType type, int oldX, int oldY) entity, int index, int x, int y)
         {
+            if (!world.IsAvailableLocation(x, y))
+                throw new ArgumentException("Location to move to is not available.");
+
             world.entities.ChangeLocationData(index, x, y);
             world.OnMoveEntity(entity.oldX, entity.oldY, x, y);
         }
