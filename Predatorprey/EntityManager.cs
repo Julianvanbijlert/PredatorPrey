@@ -26,7 +26,7 @@ namespace Project1
         {
             //Make the Entities
             int amountPrey = (int)(Config.worldSize * Config.worldSize * Config.preyDensity);
-            int amountPredator = (int)(Config.worldSize * Config.worldSize * Config.preditorDensity);
+            int amountPredator = (int)(Config.worldSize * Config.worldSize * Config.predatorDensity);
 
             for (int i = 0; i < amountPrey; i++)
             {

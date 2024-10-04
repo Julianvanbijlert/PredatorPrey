@@ -16,6 +16,7 @@ namespace Project1
         private World _world;
         private EntityManager _entityManager;
         private PlotManager _plotManager;
+        private Random _random;
 
         public static void Main()
         {
@@ -29,12 +30,12 @@ namespace Project1
         /// </summary>
         private void Initialize()
         {
-            Random r = GetNewRandom();
+            _random = GetNewRandom();
 
-            _world = new World(r);
-            _entityManager = new EntityManager(_world, r);
-            _predatorSimulator = new PredatorSimulator(_entityManager, r);
-            _preySimulator = new PreySimulator(_entityManager, r);
+            _world = new World(_random);
+            _entityManager = new EntityManager(_world, _random);
+            _predatorSimulator = new PredatorSimulator(_entityManager, _random);
+            _preySimulator = new PreySimulator(_entityManager, _random);
             _plotManager = new PlotManager();
             
 
@@ -63,10 +64,12 @@ namespace Project1
             {
                 Round(i);
                 
-                _plotManager.SaveJson();
+                //_plotManager.SaveJson();
             }
 
-            _plotManager.SavePlot();
+            //_plotManager.SavePlot();
+
+            Reset();
         }
 
         /// <summary>
@@ -149,6 +152,11 @@ namespace Project1
             }
 
             return true;
+        }
+
+        private void Reset()
+        {
+            _world = new World(_random);
         }
     }
 }
