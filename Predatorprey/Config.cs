@@ -10,14 +10,13 @@ namespace Project1
     {
         public const int worldSize = 512;
 
-        public const double deathRate = 0.025;
-        public const double birthRate = 0.6;
-        public const double walkRate = 0.1;
+        public const double deathRate = 0.5;
+        public const double birthRate = 0.5;
+        public const double walkRate = 0.2;
         public const int walkDistance = 5;
-        public const int trackDistance = 1;
 
 
-        public const double predationRate = 0.2;
+        public const double predationRate = 0.5;
 
         public const int tracksStrength = 5;
 
@@ -31,7 +30,7 @@ namespace Project1
         /// <summary>
         /// True if the simulation has tracking mechanic enabled, else false
         /// </summary>
-        public const bool WithTracks = true;
+        public const bool WithTracks = false;
         public const bool WithPrint = true;
 
         /// <summary>
