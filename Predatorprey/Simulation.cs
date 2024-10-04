@@ -55,11 +55,11 @@ namespace Project1
         }
 
         /// <summary>
-        /// Run the simulation
+        /// Run the simulation one time
         /// </summary>
         private void Run()
         {
-            for (int i = 0; i < Config.amountOfRounds; i++)
+            for (int i = 0; i < Config.amountOfRounds && !Extinction(); i++)
             {
                 Round(i);
                 
@@ -67,7 +67,14 @@ namespace Project1
             }
 
             _plotManager.SavePlot();
+        }
 
+        /// <summary>
+        /// True if the predators or prey have gone extinct
+        /// </summary>
+        private bool Extinction()
+        {
+            return _world.AmountOfPredators == 0 || _world.AmountOfPrey== 0;
         }
 
 
