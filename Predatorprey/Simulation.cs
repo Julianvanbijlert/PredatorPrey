@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualBasic;
 using ScottPlot;
 
@@ -60,16 +61,43 @@ namespace Project1
         /// </summary>
         private void Run()
         {
-            for (int i = 0; i < Config.amountOfRounds && !Extinction(); i++)
+            Config.WithTracks = false;
+            List<double> roundWithoutTracks = GetRoundUntilExtinctionSample();
+            
+            Config.WithTracks = true;
+            Reset();
+            List<double> roundWithTracks = GetRoundUntilExtinctionSample();
+
+            MeanDifference md = new MeanDifference();
+            Console.WriteLine("p value:");
+            Console.WriteLine(md.GetPDifferenceTwoIsGreater(roundWithTracks.ToArray(), roundWithoutTracks.ToArray()));
+            Console.WriteLine("\nConfidence interval:");
+            Console.WriteLine(md.GetConfidenceIntervalDifference(roundWithoutTracks.ToArray(), roundWithTracks.ToArray()));
+        }
+
+        private List<double> GetRoundUntilExtinctionSample()
+        {
+            int amountOfSimulations = 20;
+            List<double> roundsUntilExtinction = new List<double>(amountOfSimulations);
+            for (int x = 0; x < amountOfSimulations; x++)
             {
-                Round(i);
-                
-                //_plotManager.SaveJson();
+                int i = 0;
+                for (; i < Config.amountOfRounds && !Extinction(); i++)
+                {
+                    Round(i);
+
+                    //_plotManager.SaveJson();
+                }
+
+                if (_world.AmountOfPrey == 0)
+                    roundsUntilExtinction.Add(i);
+
+                //_plotManager.SavePlot();
+
+                Reset();
             }
 
-            //_plotManager.SavePlot();
-
-            Reset();
+            return roundsUntilExtinction;
         }
 
         /// <summary>
@@ -157,6 +185,13 @@ namespace Project1
         private void Reset()
         {
             _world = new World(_random);
+            _entityManager = new EntityManager(_world, _random);
+            _predatorSimulator = new PredatorSimulator(_entityManager, _random);
+            _preySimulator = new PreySimulator(_entityManager, _random);
+            _plotManager = new PlotManager();
+
+
+            _entityManager.InitializeEntities();
         }
     }
 }
