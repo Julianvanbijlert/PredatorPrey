@@ -57,47 +57,19 @@ namespace Project1
         }
 
         /// <summary>
-        /// Run the simulation one time
+        /// Run the simulation
         /// </summary>
         private void Run()
         {
-            Config.WithTracks = false;
-            List<double> roundWithoutTracks = GetRoundUntilExtinctionSample();
-            
-            Config.WithTracks = true;
-            Reset();
-            List<double> roundWithTracks = GetRoundUntilExtinctionSample();
-
-            MeanDifference md = new MeanDifference();
-            Console.WriteLine("p value:");
-            Console.WriteLine(md.GetPDifferenceTwoIsGreater(roundWithTracks.ToArray(), roundWithoutTracks.ToArray()));
-            Console.WriteLine("\nConfidence interval:");
-            Console.WriteLine(md.GetConfidenceIntervalDifference(roundWithoutTracks.ToArray(), roundWithTracks.ToArray()));
-        }
-
-        private List<double> GetRoundUntilExtinctionSample()
-        {
-            int amountOfSimulations = 20;
-            List<double> roundsUntilExtinction = new List<double>(amountOfSimulations);
-            for (int x = 0; x < amountOfSimulations; x++)
+            for (int i = 0; i < Config.amountOfRounds && !Extinction(); i++)
             {
-                int i = 0;
-                for (; i < Config.amountOfRounds && !Extinction(); i++)
-                {
-                    Round(i);
+                Round(i);
 
-                    //_plotManager.SaveJson();
-                }
-
-                if (_world.AmountOfPrey == 0)
-                    roundsUntilExtinction.Add(i);
-
-                //_plotManager.SavePlot();
-
-                Reset();
+                _plotManager.SaveJson();
             }
 
-            return roundsUntilExtinction;
+            _plotManager.SavePlot();
+            Reset();
         }
 
         /// <summary>
