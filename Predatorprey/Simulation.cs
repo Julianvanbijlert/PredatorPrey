@@ -16,6 +16,7 @@ namespace Project1
         private World _world;
         private EntityManager _entityManager;
         private PlotManager _plotManager;
+        private Random _random;
 
         public static void Main()
         {
@@ -29,12 +30,12 @@ namespace Project1
         /// </summary>
         private void Initialize()
         {
-            Random r = new Random(515615);
+            _random = GetNewRandom();
 
-            _world = new World(r);
-            _entityManager = new EntityManager(_world, r);
-            _predatorSimulator = new PredatorSimulator(_entityManager, r);
-            _preySimulator = new PreySimulator(_entityManager, r);
+            _world = new World(_random);
+            _entityManager = new EntityManager(_world, _random);
+            _predatorSimulator = new PredatorSimulator(_entityManager, _random);
+            _preySimulator = new PreySimulator(_entityManager, _random);
             _plotManager = new PlotManager();
             
 
@@ -42,19 +43,41 @@ namespace Project1
         }
 
         /// <summary>
-        /// Run the simulation
+        /// Get a Random object based on the seed in Config
+        /// </summary>
+        private Random GetNewRandom()
+        {
+            if(Config.rndSeed != -1)
+                return new Random(Config.rndSeed);
+
+            // -1 signals you want a random seed, so do not specify the seed
+            // when making the Random object.
+            return new Random();
+        }
+
+        /// <summary>
+        /// Run the simulation one time
         /// </summary>
         private void Run()
         {
-            for (int i = 0; i < Config.amountOfRounds; i++)
+            for (int i = 0; i < Config.amountOfRounds && !Extinction(); i++)
             {
                 Round(i);
                 
-                _plotManager.SaveJson();
+                //_plotManager.SaveJson();
             }
 
-            _plotManager.SavePlot();
+            //_plotManager.SavePlot();
 
+            Reset();
+        }
+
+        /// <summary>
+        /// True if the predators or prey have gone extinct
+        /// </summary>
+        private bool Extinction()
+        {
+            return _world.AmountOfPredators == 0 || _world.AmountOfPrey== 0;
         }
 
 
@@ -129,6 +152,11 @@ namespace Project1
             }
 
             return true;
+        }
+
+        private void Reset()
+        {
+            _world = new World(_random);
         }
     }
 }
