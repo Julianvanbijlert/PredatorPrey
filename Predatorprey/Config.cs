@@ -16,7 +16,7 @@ namespace Project1
         public const int walkDistance = 5;
 
 
-        public const double predationRate = 0.2;
+        public const double predationRate = 0.8;
 
         public const int tracksStrength = 5;
 
@@ -30,7 +30,14 @@ namespace Project1
         /// <summary>
         /// True if the simulation has tracking mechanic enabled, else false
         /// </summary>
-        public const bool WithTracks = true;
+        public const bool WithTracks = false;
         public const bool WithPrint = false;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+        
+        public const int rndSeed = 420460;
     }
 }

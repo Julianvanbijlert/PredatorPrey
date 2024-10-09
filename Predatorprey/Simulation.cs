@@ -64,7 +64,7 @@ namespace Project1
             {
                 Round(i);
                 
-                //_plotManager.SaveJson();
+                _plotManager.SaveJson();
             }
 
             //_plotManager.SavePlot();
