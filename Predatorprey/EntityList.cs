@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Project1
     /// A simple class for keeping track of the live entities.
     /// Supports adding, removing and random indexing of the entities.
     /// </summary>
-    public class EntityList 
+    public class EntityList : IEnumerable
     {
         private (EntityType, int, int)[] _entities;
         public int k { get; private set; } //for knowing the amount of entities, this is the first one that is dead
@@ -29,6 +30,11 @@ namespace Project1
             k = 0;
             amountOfPredators = 0;
             amountOfPrey = 0;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return _entities.GetEnumerator();
         }
 
         /// <summary>

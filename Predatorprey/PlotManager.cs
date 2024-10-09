@@ -14,6 +14,8 @@ namespace Project1
         private Queue<int> predatorCount;
         private int[] roundCount;
         private int[] entityCount;
+        private int[][] grid;
+
 
         public PlotManager()
         {
@@ -23,7 +25,7 @@ namespace Project1
             roundCount = new int[Config.amountOfRounds];
         }
 
-        public void AddData(int round, int entities, int prey, int predator)
+        public void AddData(int round, int entities, int prey, int predator, EntityList entity)
         {
             entityCount[round] = entities;
 
@@ -38,6 +40,23 @@ namespace Project1
             }
 
             roundCount[round] = round;
+
+
+            int[][] tempGrid = new int[Config.worldSize][];
+
+            for (int i = 0; i < Config.worldSize; i++)
+            {
+                tempGrid[i] = new int[Config.worldSize];
+            }
+
+            foreach ((EntityType,int, int) e in entity)
+            {
+                int color = e.Item1 == EntityType.Prey ? 1 : 2;
+                tempGrid[e.Item2][ e.Item3] = color;
+            }
+
+            grid = tempGrid;
+
         }
 
         public void SavePlot()
@@ -55,7 +74,7 @@ namespace Project1
 
         public void SaveJson()
         {
-            var data = new DrawingData { prey = preyCount.ToArray(), predator = predatorCount.ToArray() };
+            var data = new DrawingData { prey = preyCount.ToArray(), predator = predatorCount.ToArray(), Egrid = grid };
             var jsonString = JsonSerializer.Serialize(data);
             File.WriteAllText("../../../JSON/output.json", jsonString);
         }
@@ -64,6 +83,8 @@ namespace Project1
         {
             public int[] prey { get; set; }
             public int[] predator { get; set; }
+
+            public int[][] Egrid { get; set; }
         }
 
 
