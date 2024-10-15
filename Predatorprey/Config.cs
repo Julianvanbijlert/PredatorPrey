@@ -38,6 +38,6 @@ namespace Project1
         /// -1 if you want a random seed to be used.
         /// </summary>
         
-        public const int rndSeed = -1;
+        public const int rndSeed = 801;
     }
 }

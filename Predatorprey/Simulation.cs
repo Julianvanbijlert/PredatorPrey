@@ -18,13 +18,16 @@ namespace Project1
         private PlotManager _plotManager;
         private Random _random;
 
+        public Simulation(Random rnd)
+        {
+            this._random = rnd;
+        }
+
         /// <summary>
         /// Set all necessary objects ready for the simulation to start
         /// </summary>
         public void Initialize()
         {
-            _random = GetNewRandom();
-
             _world = new World(_random);
             _entityManager = new EntityManager(_world, _random);
             _predatorSimulator = new PredatorSimulator(_entityManager, _random);
@@ -36,23 +39,12 @@ namespace Project1
         }
 
         /// <summary>
-        /// Get a Random object based on the seed in Config
-        /// </summary>
-        private Random GetNewRandom()
-        {
-            if(Config.rndSeed != -1)
-                return new Random(Config.rndSeed);
-
-            // -1 signals you want a random seed, so do not specify the seed
-            // when making the Random object.
-            return new Random();
-        }
-
-        /// <summary>
         /// Run the simulation one time
         /// </summary>
         public void Run()
         {
+            Initialize();
+
             for (int i = 0; i < Config.amountOfRounds && !Extinction(); i++)
             {
                 Round(i);
