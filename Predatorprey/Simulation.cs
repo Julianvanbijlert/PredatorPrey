@@ -18,17 +18,10 @@ namespace Project1
         private PlotManager _plotManager;
         private Random _random;
 
-        public static void Main()
-        {
-            Simulation s = new Simulation();
-            s.Initialize();
-            s.Run();
-        }
-
         /// <summary>
         /// Set all necessary objects ready for the simulation to start
         /// </summary>
-        private void Initialize()
+        public void Initialize()
         {
             _random = GetNewRandom();
 
@@ -58,13 +51,13 @@ namespace Project1
         /// <summary>
         /// Run the simulation one time
         /// </summary>
-        private void Run()
+        public void Run()
         {
             for (int i = 0; i < Config.amountOfRounds && !Extinction(); i++)
             {
                 Round(i);
                 
-                _plotManager.SaveJson();
+                //_plotManager.SaveJson();
             }
 
             //_plotManager.SavePlot();
@@ -111,7 +104,7 @@ namespace Project1
             //Output.PrintWorld(_world);
             //Output.PrintList(_world);
 
-            SaveStats(round);
+            //SaveStats(round);
             if(Config.WithPrint)
                 _world.PrintStats();
         }
