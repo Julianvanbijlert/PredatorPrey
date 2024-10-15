@@ -15,7 +15,7 @@ namespace Project1
             Program p = new RoundsUntilExtinctionProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(20);
+            p.Run(5);
         }
 
         /// <summary>
