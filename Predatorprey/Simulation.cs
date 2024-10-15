@@ -63,7 +63,7 @@ namespace Project1
         /// <summary>
         /// True if the predators or prey have gone extinct
         /// </summary>
-        private bool Extinction()
+        public bool Extinction()
         {
             return _world.AmountOfPredators == 0 || _world.AmountOfPrey== 0;
         }

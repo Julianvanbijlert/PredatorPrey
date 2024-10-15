@@ -12,19 +12,22 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new Program();
+            Program p = new RoundsUntilExtinctionProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run();
+            p.Run(20);
         }
 
-        public Program()
+        /// <summary>
+        /// Run the entire program/experiment once
+        /// </summary>
+        /// <param name="amountOfRuns">The amount of times each version should run for the experiment</param>
+        protected virtual void Run(int amountOfRuns)
         {
-        }
-
-        protected virtual void Run()
-        {
-            simulation.Run();
+            for (int i = 0; i < amountOfRuns; i++)
+            {
+                simulation.Run();
+            }
         }
 
         /// <summary>
@@ -49,40 +52,47 @@ namespace Project1
         private List<int> roundsWTracks = new List<int>();
 
         /// <summary>
-        /// Run the simulation one time
+        /// Run the experiment one time
         /// </summary>
-        protected override void Run()
+        protected override void Run(int amountOfRuns)
         {
             Config.WithTracks = false;
-            List<double> roundWithoutTracks = GetRoundUntilExtinctionSample();
+            GetRoundUntilExtinctionSample(amountOfRuns);
 
             Config.WithTracks = true;
-            List<double> roundWithTracks = GetRoundUntilExtinctionSample();
+            GetRoundUntilExtinctionSample(amountOfRuns);
+
+            double[] withoutTracks = roundsWOTracks.Select(x => (double)x).ToArray();
+            double[] withTracks = roundsWTracks.Select(x => (double)x).ToArray();
+
 
             MeanDifference md = new MeanDifference();
-            Console.WriteLine("p value:");
-            Console.WriteLine(md.GetPDifferenceTwoIsGreater(roundWithTracks.ToArray(), roundWithoutTracks.ToArray()));
-            Console.WriteLine("\nConfidence interval:");
-            Console.WriteLine(md.GetConfidenceIntervalDifference(roundWithoutTracks.ToArray(), roundWithTracks.ToArray()));
+
+            Console.WriteLine("\nMean and sd without tracks:");
+            Console.WriteLine(md.GetMeanAndSd(withoutTracks));
+
+            Console.WriteLine("Mean and sd with tracks:");
+            Console.WriteLine(md.GetMeanAndSd(withTracks));
+
+            Console.WriteLine("p value more rounds without tracks:");
+            Console.WriteLine(md.GetPDifferenceTwoIsGreater(withTracks, withoutTracks));
+
+            Console.WriteLine("\nConfidence interval [without - with]:");
+            Console.WriteLine(md.GetConfidenceIntervalDifference(withoutTracks, withTracks));
         }
 
-        private List<double> GetRoundUntilExtinctionSample()
+        private void GetRoundUntilExtinctionSample(int amountOfRuns)
         {
-            int amountOfSimulations = 20;
-            List<double> roundsUntilExtinction = new List<double>(amountOfSimulations);
-
-            for (int x = 0; x < amountOfSimulations; x++)
+            for (int x = 0; x < amountOfRuns; x++)
             {
                 simulation.Run();
             }
-
-            return roundsUntilExtinction;
         }
 
         public override void OnSimulationEnd()
         {
-            if (Config.WithTracks) roundsWTracks.Add(simulation.roundNumber);
-            else roundsWOTracks.Add(simulation.roundNumber);
+            if (Config.WithTracks && simulation.Extinction()) roundsWTracks.Add(simulation.roundNumber);
+            else if(simulation.Extinction()) roundsWOTracks.Add(simulation.roundNumber);
         }
     }
 }

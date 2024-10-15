@@ -23,7 +23,7 @@ namespace Project1
         public const double predatorDensity = 0.15;
         public const double preyDensity = 0.15;
 
-        public const int amountOfRounds = 5000;
+        public const int amountOfRounds = 500;
 
         public const int BlockSize = worldSize / 10;
 
