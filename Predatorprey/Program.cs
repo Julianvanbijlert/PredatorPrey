@@ -12,10 +12,10 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new ProportionExinctionProgram();
+            Program p = new Program();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(5);
+            p.Run(1);
         }
 
         /// <summary>
