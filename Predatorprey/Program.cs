@@ -40,4 +40,14 @@ namespace Project1
             return new Random();
         }
     }
+
+    internal class RoundsUntilExtinctionProgram : Program
+    {
+        public RoundsUntilExtinctionProgram(Simulation s) : base(s) {}
+
+        protected override void Run()
+        {
+            simulation.Run();
+        }
+    }
 }
