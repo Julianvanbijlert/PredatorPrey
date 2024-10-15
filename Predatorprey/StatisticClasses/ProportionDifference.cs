@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.Distributions;
 
 namespace Project1
 {
@@ -46,7 +47,8 @@ namespace Project1
             double se = CalculateSe(pooledProp, n1, n2);
             double zScore = pointEstimate / se;
 
-            return zScore;
+            double pValue = Normal.CDF(0, 1, zScore);
+            return pValue;
         }
 
         private bool CheckConditions(double pooledProp, int n1, int n2)

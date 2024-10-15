@@ -12,7 +12,7 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new RoundsUntilExtinctionProgram();
+            Program p = new ProportionExinctionProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
             p.Run(5);
@@ -93,6 +93,60 @@ namespace Project1
         {
             if (Config.WithTracks && simulation.Extinction()) roundsWTracks.Add(simulation.roundNumber);
             else if(simulation.Extinction()) roundsWOTracks.Add(simulation.roundNumber);
+        }
+    }
+
+    internal class ProportionExinctionProgram : Program
+    {
+        private int successesWOTracks;
+        private int totalWOTracks;
+
+        private int successesWTracks;
+        private int totalWTracks;
+
+        protected override void Run(int amountOfRuns)
+        {
+            Config.WithTracks = false;
+
+            while (!EnoughSimulations(successesWOTracks, totalWOTracks))
+            {
+                totalWOTracks++;
+                simulation.Run();
+            }
+
+            Config.WithTracks = true;
+
+            while(!EnoughSimulations(successesWTracks, totalWTracks))
+            {
+                totalWTracks++; 
+                simulation.Run();
+            }
+
+
+
+            Console.WriteLine("\nConfidence interval [without - with]");
+            Console.WriteLine(new ProportionDifferenceCI().
+                ConfidenceIntervalProp1MinProp2(successesWOTracks, successesWTracks, 
+                    totalWOTracks, totalWTracks));
+
+            Console.WriteLine("P-value proportion with tracks is larger than without tracks");
+            Console.WriteLine(new ProportionDifferencePValue().
+                CalculatePValuePropTwoIsGreater(successesWOTracks, successesWTracks, 
+                    totalWOTracks, totalWTracks));
+        }
+
+        private bool EnoughSimulations(int successes, int total)
+        {
+            return successes >= 10 && total - successes >= 10;
+        }
+
+        public override void OnSimulationEnd()
+        {
+            if (simulation.Extinction())
+            {
+                if (Config.WithTracks) successesWTracks++;
+                else successesWOTracks++;
+            }
         }
     }
 }
