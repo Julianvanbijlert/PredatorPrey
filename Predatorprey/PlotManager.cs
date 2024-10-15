@@ -59,12 +59,15 @@ namespace Project1
 
         }
 
+      
+
         public void SavePlot()
         {
             _plot.Clear();
             _plot.Add.Scatter(roundCount, predatorCount.ToArray());
             _plot.Add.Scatter(roundCount, preyCount.ToArray());
             _plot.Add.Scatter(roundCount, entityCount);
+
 
 
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");

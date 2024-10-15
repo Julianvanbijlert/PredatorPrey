@@ -248,7 +248,7 @@ namespace Project1
         /// <summary>
         /// Prints the amount of entities, predators and prey in the world
         /// </summary>
-        public void PrintStats()
+        public void PrintStats(int round)
         {
             Console.Clear();
 
@@ -294,6 +294,7 @@ namespace Project1
             Console.WriteLine("Predators: " + entities.AmountOfPredators);
             Console.WriteLine("Prey: " + entities.AmountOfPrey);
             Console.WriteLine("Entities: " + AmountOfEntities);
+            Console.WriteLine("Round: " + round);
         }
 
         public void AddStatsToPM(PlotManager pm, int round)

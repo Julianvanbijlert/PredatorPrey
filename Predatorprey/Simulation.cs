@@ -67,7 +67,7 @@ namespace Project1
                 _plotManager.SaveJson();
             }
 
-            //_plotManager.SavePlot();
+            _plotManager.SavePlot();
 
             Reset();
         }
@@ -113,7 +113,7 @@ namespace Project1
 
             SaveStats(round);
             if(Config.WithPrint)
-                _world.PrintStats();
+                _world.PrintStats(round);
         }
 
         public void SaveStats(int round)

@@ -7,14 +7,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
 <body>
+    <button id="toggleButton">Toggle Grid/Entities</button>
+
     <script>
         let drawingData;
         let prey = [];
         let predator = [];
         const size = 512 * 512 ;
-        const width = 600;
-        const height = 600;
+        const width = 513;
+        const height = 513;
         let dataLoaded = false;
+        var boolGrid;
 
         const filepath = 'http://localhost:8000/JSON/output.json';
         //const filepath = 'http://localhost:8000/Predatorprey/JSON/output.json'
@@ -24,10 +27,18 @@
         let predatorBuffer = [];
         let grid = [[]];
 
+
+        
+
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            boolGrid = !boolGrid;
+        });
+
         function setup() {
             createCanvas(width , height);
             background(220);
             GetData();  // Load data once and store it in the buffer
+            boolGrid = true;
         }
     
         function updateDrawing(data) {
@@ -48,13 +59,19 @@
         }
     
         function draw() {
+
             // Only draw if data has been loaded into the buffer
             if (dataLoaded) {
-                //background(220);  // Clear the canvas
-                //drawEntity('green', preyBuffer);
-                //drawEntity('red', predatorBuffer);
-                drawGrid(grid);
+                
+                background(220);  // Clear the canvas
 
+                if(boolGrid)
+                    drawGrid(grid);
+                else
+                {
+                    drawEntity('green', preyBuffer);
+                    drawEntity('red', predatorBuffer);
+                }
             }
         }
 
@@ -63,15 +80,18 @@
                 for (let j = 0; j < grid[i].length; j++) {
                     if (grid[i][j] === 1) {
                         fill(0, 255, 0);
-                        rect(j * 10, i * 10, 10, 10); 
+                        //rect(j * 10, i * 10, 10, 10); 
+                        set(j, i, color(0, 255, 0));
                     } 
                     
                     if (grid[i][j] === 2) {
                         fill(255, 0, 0);
-                        rect(j * 10, i * 10, 10, 10);  
+                        //rect(j * 10, i * 10, 10, 10);  
+                        set(j, i, color(255, 0, 0));
                     }
                 }
             }
+            updatePixels();
         }
 
 
