@@ -30,7 +30,7 @@ namespace Project1
         /// <summary>
         /// True if the simulation has tracking mechanic enabled, else false
         /// </summary>
-        public const bool WithTracks = false;
+        public static bool WithTracks = false;
         public const bool WithPrint = true;
 
         /// <summary>

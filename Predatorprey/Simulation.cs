@@ -11,6 +11,7 @@ namespace Project1
     /// </summary>
     internal class Simulation
     {
+        private Program _program;
         private PredatorSimulator _predatorSimulator;
         private PreySimulator _preySimulator;
         private World _world;
@@ -18,8 +19,11 @@ namespace Project1
         private PlotManager _plotManager;
         private Random _random;
 
-        public Simulation(Random rnd)
+        public int roundNumber { get; private set; }
+
+        public Simulation(Program p, Random rnd)
         {
+            this._program = p;
             this._random = rnd;
         }
 
@@ -45,16 +49,15 @@ namespace Project1
         {
             Initialize();
 
-            for (int i = 0; i < Config.amountOfRounds && !Extinction(); i++)
+            for (roundNumber = 0; roundNumber < Config.amountOfRounds && !Extinction(); roundNumber++)
             {
-                Round(i);
+                Round();
                 
                 //_plotManager.SaveJson();
             }
 
             //_plotManager.SavePlot();
-
-            Reset();
+            _program.OnSimulationEnd();
         }
 
         /// <summary>
@@ -69,7 +72,7 @@ namespace Project1
         /// <summary>
         /// Handle one single round of the simulation
         /// </summary>
-        private void Round(int round)
+        private void Round()
         {
             int amountOfEntities = _world.AmountOfEntities;
             for (int i = 0; i < amountOfEntities; i++)
@@ -96,7 +99,7 @@ namespace Project1
             //Output.PrintWorld(_world);
             //Output.PrintList(_world);
 
-            //SaveStats(round);
+            //SaveStats(roundNumber);
             if(Config.WithPrint)
                 _world.PrintStats();
         }
@@ -137,11 +140,6 @@ namespace Project1
             }
 
             return true;
-        }
-
-        private void Reset()
-        {
-            _world = new World(_random);
         }
     }
 }
