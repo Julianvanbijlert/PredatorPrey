@@ -132,6 +132,8 @@ namespace Project1
 
     public class PredatorSimulator : EntitySimulator
     {
+        public double SuccessfulPredations { get; protected set; }
+
         public PredatorSimulator(EntityManager entityManager, Random rnd) : base(entityManager, rnd)
         {
             
@@ -170,6 +172,7 @@ namespace Project1
             // check whether there is a prey on index and see if predation is successful
             if (index != -1 && Attempt.Success(rnd, Config.predationRate))
             {
+                SuccessfulPredations++;
                 Predation(index);
             }
         }

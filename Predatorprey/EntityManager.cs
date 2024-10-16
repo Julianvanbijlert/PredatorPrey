@@ -12,6 +12,8 @@ namespace Project1
         public World world { get; set; }
         // the same random as the worlds random
         protected Random rnd;
+        // keep track of the total amount of predators born since starting simulation
+        public double AmountOfPredatorsBorn { get; private set; }
 
         public EntityManager(World world, Random rnd)
         {
@@ -47,6 +49,7 @@ namespace Project1
         /// <param name="entity">The entity to add</param>
         public void AddEntity((EntityType, int x, int y) entity)
         {
+            if (entity.Item1 == EntityType.Predator) AmountOfPredatorsBorn++;
             int newIndex = world.entities.BirthEntity(entity);
             world.grid[entity.x, entity.y] = newIndex;
         }

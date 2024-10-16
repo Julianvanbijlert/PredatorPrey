@@ -21,6 +21,8 @@ namespace Project1
 
         public int roundNumber { get; private set; }
 
+        public double averagePredation => (_predatorSimulator.SuccessfulPredations / _entityManager.AmountOfPredatorsBorn);
+
         public Simulation(Program p, Random rnd)
         {
             this._program = p;

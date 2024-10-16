@@ -12,10 +12,10 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new Program();
+            Program p = new MeanPreyEatenProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(1);
+            p.Run(20);
         }
 
         /// <summary>
@@ -147,6 +147,55 @@ namespace Project1
                 if (Config.WithTracks) successesWTracks++;
                 else successesWOTracks++;
             }
+        }
+    }
+
+    /// <summary>
+    /// Program for research about mean amount of prey eaten by a predator
+    /// </summary>
+    internal class MeanPreyEatenProgram : Program
+    {
+        // keep track of means between all simulation runs
+        List<double> woTracks = new List<double>();
+        List<double> wTracks = new List<double>();
+
+        protected override void Run(int amountOfRuns)
+        {
+            Config.WithTracks = false;
+            for (int i = 0; i < amountOfRuns; i++)
+            {
+                simulation.Run();
+            }
+
+            Config.WithTracks = true;
+            for (int i = 0; i < amountOfRuns; i++)
+            {
+                simulation.Run();
+            }
+
+            // cast to array
+            double[] withoutTracks = woTracks.ToArray();
+            double[] withTracks = wTracks.ToArray();
+
+            MeanDifference md = new MeanDifference();
+
+            Console.WriteLine("\nMean and sd without tracks:");
+            Console.WriteLine(md.GetMeanAndSd(withoutTracks));
+
+            Console.WriteLine("Mean and sd with tracks:");
+            Console.WriteLine(md.GetMeanAndSd(withTracks));
+
+            Console.WriteLine("p-value lower predation mean with tracks:");
+            Console.WriteLine(md.GetPDifferenceTwoIsGreater(withTracks, withoutTracks));
+
+            Console.WriteLine("\nConfidence interval [without - with]:");
+            Console.WriteLine(md.GetConfidenceIntervalDifference(withoutTracks, withTracks));
+        }
+
+        public override void OnSimulationEnd()
+        {
+            if(Config.WithTracks) wTracks.Add(simulation.averagePredation);
+            else woTracks.Add(simulation.averagePredation);
         }
     }
 }
