@@ -141,7 +141,6 @@ namespace Project1
 
         public override void AttemptActions()
         {
-            
             AttemptWalk();
             AttemptPredation();
             AttemptDeath();
@@ -214,6 +213,12 @@ namespace Project1
             // if the location the direction points to is available, go there
             if (world.IsAvailableLocation(newX, newY))
                 return (newX, newY);
+
+            // if the location is not available, check whether a prey is
+            // blocking. If so, stand still, so predation can happen after
+            // this walk.
+            if (world.PreyOnLocation(newX, newY) != -1)
+                return (_currentEntity.x, _currentEntity.y);
 
             // else go to the random high tracks location
             return highTracksLocation;
