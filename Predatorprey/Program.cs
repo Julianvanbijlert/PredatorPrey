@@ -12,10 +12,10 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new RoundsUntilExtinctionProgram();
+            Program p = new Program();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(25);
+            p.Run(1);
         }
 
         /// <summary>
@@ -202,6 +202,25 @@ namespace Project1
         {
             if(Config.WithTracks) wTracks.Add(simulation.averagePredation);
             else woTracks.Add(simulation.averagePredation);
+        }
+    }
+
+    internal class ExtinctionRateFindProgram : Program
+    {
+        private int amountOfExtinctions = 0;
+        private int amountOfNoExtinctions = 0;
+
+        protected override void Run(int amountOfTimes)
+        {
+            base.Run(amountOfTimes);
+            Console.WriteLine("Amount of extinctions: ");
+            Console.WriteLine(amountOfExtinctions);
+        }
+
+        public override void OnSimulationEnd()
+        {
+            if (simulation.Extinction()) amountOfExtinctions++;
+            else amountOfNoExtinctions++;
         }
     }
 }
