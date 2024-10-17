@@ -15,7 +15,7 @@ namespace Project1
             Program p = new MeanPreyEatenProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(20);
+            p.Run(100);
         }
 
         /// <summary>
@@ -68,7 +68,13 @@ namespace Project1
 
             MeanDifference md = new MeanDifference();
 
-            Console.WriteLine("\nMean and sd without tracks:");
+            Console.WriteLine("\nAmount of successes without tracks:");
+            Console.WriteLine(withoutTracks.Length);
+
+            Console.WriteLine("Amount of successes with tracks:");
+            Console.WriteLine(withTracks.Length);
+
+            Console.WriteLine("Mean and sd without tracks:");
             Console.WriteLine(md.GetMeanAndSd(withoutTracks));
 
             Console.WriteLine("Mean and sd with tracks:");
