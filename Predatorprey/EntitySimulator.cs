@@ -141,8 +141,9 @@ namespace Project1
 
         public override void AttemptActions()
         {
-            AttemptPredation();
+            
             AttemptWalk();
+            AttemptPredation();
             AttemptDeath();
         }
 
