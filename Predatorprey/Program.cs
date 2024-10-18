@@ -12,10 +12,10 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new Program();
+            Program p = new RoundsUntilExtinctionWHuntingProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(1);
+            p.Run(10);
         }
 
         /// <summary>
@@ -46,45 +46,46 @@ namespace Project1
         public virtual void OnSimulationEnd(){}
     }
 
-    internal class RoundsUntilExtinctionProgram : Program
+    /// <summary>
+    /// Abstract class for all research about amount of rounds until
+    /// extinction using some change.
+    /// </summary>
+    internal abstract class RoundsUntilExtinctionAbstract : Program
     {
-        private List<int> roundsWOTracks = new List<int>();
-        private List<int> roundsWTracks = new List<int>();
+        private List<int> roundsWOChange = new List<int>();
+        private List<int> roundsWChange  = new List<int>();
 
-        /// <summary>
-        /// Run the experiment one time
-        /// </summary>
         protected override void Run(int amountOfRuns)
         {
-            Config.WithTracks = false;
+            SetInitial();
             GetRoundUntilExtinctionSample(amountOfRuns);
 
-            Config.WithTracks = true;
+            Change();
             GetRoundUntilExtinctionSample(amountOfRuns);
 
-            double[] withoutTracks = roundsWOTracks.Select(x => (double)x).ToArray();
-            double[] withTracks = roundsWTracks.Select(x => (double)x).ToArray();
+            double[] withoutChange = roundsWOChange.Select(x => (double)x).ToArray();
+            double[] withChange = roundsWChange.Select(x => (double)x).ToArray();
 
 
             MeanDifference md = new MeanDifference();
 
-            Console.WriteLine("\nAmount of successes without tracks:");
-            Console.WriteLine(withoutTracks.Length);
+            Console.WriteLine("\nAmount of successes without change:");
+            Console.WriteLine(withoutChange.Length);
 
-            Console.WriteLine("Amount of successes with tracks:");
-            Console.WriteLine(withTracks.Length);
+            Console.WriteLine("Amount of successes with change:");
+            Console.WriteLine(withChange.Length);
 
-            Console.WriteLine("Mean and sd without tracks:");
-            Console.WriteLine(md.GetMeanAndSd(withoutTracks));
+            Console.WriteLine("Mean and sd without change:");
+            Console.WriteLine(md.GetMeanAndSd(withoutChange));
 
-            Console.WriteLine("Mean and sd with tracks:");
-            Console.WriteLine(md.GetMeanAndSd(withTracks));
+            Console.WriteLine("Mean and sd with change:");
+            Console.WriteLine(md.GetMeanAndSd(withChange));
 
-            Console.WriteLine("p value more rounds without tracks:");
-            Console.WriteLine(md.GetPDifferenceTwoIsGreater(withTracks, withoutTracks));
+            Console.WriteLine("p value more rounds without change:");
+            Console.WriteLine(md.GetPDifferenceTwoIsGreater(withChange, withoutChange));
 
             Console.WriteLine("\nConfidence interval [without - with]:");
-            Console.WriteLine(md.GetConfidenceIntervalDifference(withoutTracks, withTracks));
+            Console.WriteLine(md.GetConfidenceIntervalDifference(withoutChange, withChange));
         }
 
         private void GetRoundUntilExtinctionSample(int amountOfRuns)
@@ -97,8 +98,43 @@ namespace Project1
 
         public override void OnSimulationEnd()
         {
-            if (Config.WithTracks && simulation.Extinction()) roundsWTracks.Add(simulation.roundNumber);
-            else if(simulation.Extinction()) roundsWOTracks.Add(simulation.roundNumber);
+            if (simulation.Extinction())
+            {
+                if(ChangeIsActive()) roundsWChange.Add(simulation.roundNumber);
+                else roundsWOChange.Add(simulation.roundNumber);
+            }
+        }
+
+        /// <summary>
+        /// Makes sure the change is not active
+        /// </summary>
+        protected abstract void SetInitial();
+        /// <summary>
+        /// Applies the change the research is about
+        /// </summary>
+        protected abstract void Change();
+        /// <summary>
+        /// Returns true if the change is active now, else false
+        /// </summary>
+        /// <returns></returns>
+        protected abstract bool ChangeIsActive();
+    }
+
+    internal class RoundsUntilExtinctionWHuntingProgram : RoundsUntilExtinctionAbstract
+    {
+        protected override void SetInitial()
+        {
+            Config.WithTracks = false;
+        }
+
+        protected override void Change()
+        {
+            Config.WithTracks = true;
+        }
+
+        protected override bool ChangeIsActive()
+        {
+            return Config.WithTracks;
         }
     }
 
