@@ -273,3 +273,5 @@ p value more rounds with change:
 
 Confidence interval [without - with]:
 (-2,4010926434302693, 0,321092643430271)
+
+Uitslagen tussen 3 en 20 staan in het verslag in een tabel.
