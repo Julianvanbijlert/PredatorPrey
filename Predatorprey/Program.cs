@@ -12,10 +12,10 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new RoundsUntilExtinctionWHuntingProgram();
+            Program p = new Program();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(10);
+            p.Run(1);
         }
 
         /// <summary>
@@ -55,12 +55,15 @@ namespace Project1
         private List<int> roundsWOChange = new List<int>();
         private List<int> roundsWChange  = new List<int>();
 
+        private bool _changeIsActive = false;
+
         protected override void Run(int amountOfRuns)
         {
             SetInitial();
             GetRoundUntilExtinctionSample(amountOfRuns);
 
             Change();
+            _changeIsActive = true;
             GetRoundUntilExtinctionSample(amountOfRuns);
 
             double[] withoutChange = roundsWOChange.Select(x => (double)x).ToArray();
@@ -84,6 +87,9 @@ namespace Project1
             Console.WriteLine("p value more rounds without change:");
             Console.WriteLine(md.GetPDifferenceTwoIsGreater(withChange, withoutChange));
 
+            Console.WriteLine("p value more rounds with change:");
+            Console.WriteLine(md.GetPDifferenceTwoIsGreater(withoutChange, withChange));
+
             Console.WriteLine("\nConfidence interval [without - with]:");
             Console.WriteLine(md.GetConfidenceIntervalDifference(withoutChange, withChange));
         }
@@ -100,7 +106,7 @@ namespace Project1
         {
             if (simulation.Extinction())
             {
-                if(ChangeIsActive()) roundsWChange.Add(simulation.roundNumber);
+                if(_changeIsActive) roundsWChange.Add(simulation.roundNumber);
                 else roundsWOChange.Add(simulation.roundNumber);
             }
         }
@@ -113,11 +119,6 @@ namespace Project1
         /// Applies the change the research is about
         /// </summary>
         protected abstract void Change();
-        /// <summary>
-        /// Returns true if the change is active now, else false
-        /// </summary>
-        /// <returns></returns>
-        protected abstract bool ChangeIsActive();
     }
 
     internal class RoundsUntilExtinctionWHuntingProgram : RoundsUntilExtinctionAbstract
@@ -131,10 +132,33 @@ namespace Project1
         {
             Config.WithTracks = true;
         }
+    }
 
-        protected override bool ChangeIsActive()
+    internal class RoundsUntilExtinctionWDiffTracksStrength : RoundsUntilExtinctionAbstract
+    {
+        private readonly int _normalStrength;
+        private readonly int _normalWalkDistance;
+        private readonly int _diffStrength;
+        private readonly int _diffWalkDistance;
+        public RoundsUntilExtinctionWDiffTracksStrength(int normalStrength, int normalWalkDistance, int diffStrength, int diffWalkDistance)
         {
-            return Config.WithTracks;
+            _normalStrength = normalStrength;
+            _normalWalkDistance = normalWalkDistance;
+            _diffStrength = diffStrength;
+            _diffWalkDistance = diffWalkDistance;
+        }
+
+        protected override void SetInitial()
+        {
+            Config.WithTracks = true;
+            Config.tracksStrength = _normalStrength;
+            Config.walkDistance = _normalWalkDistance;
+        }
+
+        protected override void Change()
+        {
+            Config.tracksStrength = _diffStrength;
+            Config.walkDistance = _diffWalkDistance;
         }
     }
 

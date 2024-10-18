@@ -1,0 +1,275 @@
+Onderzoeksresultaten:
+aantal rondes tot uitsterven:
+
+        public const int worldSize = 512;
+
+        public const double deathRate = 0.025;
+        public const double birthRate = 0.1;
+        public const double walkRate = 0.3;
+        public const int walkDistance = 5;
+
+
+        public const double predationRate = 0.8;
+
+        public const int tracksStrength = 5;
+
+        public const double predatorDensity = 0.15;
+        public const double preyDensity = 0.15;
+
+        public const int amountOfRounds = 210;
+
+        public const int BlockSize = worldSize / 10;
+
+        /// <summary>
+        /// True if the simulation has tracking mechanic enabled, else false
+        /// </summary>
+        public static bool WithTracks = false;
+        public const bool WithPrint = true;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+        
+        public const int rndSeed = -1;
+
+Amount of successes without tracks:
+79
+Amount of successes with tracks:
+100
+
+Mean and sd without tracks:
+(62,49367088607595, 14,974977794384769)
+Mean and sd with tracks:
+(28,69, 4,2841451889496005)
+p value more rounds without tracks:
+6,042960824333976E-32
+
+Confidence interval [without - with]:
+(30,396344014290687, 37,21099775786121)
+
+
+
+
+
+
+Dezelfde parameters voor het gemiddelde aantal opgegeten prey per predator
+Resultaten:
+
+Mean and sd without tracks:
+(0,5716386913310045, 0,0018407136999538892)
+Mean and sd with tracks:
+(0,5611312102223232, 0,0007546725722241466)
+p-value lower predation mean with tracks:
+1,2275507433326427E-74
+
+Confidence interval [without - with]:
+(0,010117556479305225, 0,01089740573805754)
+
+
+
+
+
+
+
+
+
+
+deze parameters hebben ~3.2% kans op extinction zonder tracks en toch gebeurt er altijd extinction met tracks.
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Project1
+{ 
+    public struct Config
+    {
+        public const int worldSize = 512;
+
+        public const double deathRate = 0.03575;
+        public const double birthRate = 0.20;
+        public const double walkRate = 0.3;
+        public const int walkDistance = 5;
+
+
+        public const double predationRate = 0.8;
+
+        public const int tracksStrength = 5;
+
+        public const double predatorDensity = 0.15;
+        public const double preyDensity = 0.15;
+
+        public const int amountOfRounds = 210;
+
+        public const int BlockSize = worldSize / 10;
+
+        /// <summary>
+        /// True if the simulation has tracking mechanic enabled, else false
+        /// </summary>
+        public static bool WithTracks = true;
+        public const bool WithPrint = true;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+        
+        public const int rndSeed = -1;
+    }
+}
+
+
+Na 500 runs zonder hunting slechts 16 extinctions.
+Na 100 runs met hunting 100 extinctions.
+
+
+
+
+
+
+
+
+Andersom: kans van ~93% op extinction met tracks.
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Project1
+{
+    public struct Config
+    {
+        public const int worldSize = 512;
+
+        public const double deathRate = 0.05375;
+        public const double birthRate = 0.17;
+        public const double walkRate = 0.3;
+        public const int walkDistance = 5;
+
+
+        public const double predationRate = 0.8;
+
+        public const int tracksStrength = 5;
+
+        public const double predatorDensity = 0.15;
+        public const double preyDensity = 0.15;
+
+        public const int amountOfRounds = 200;
+
+        public const int BlockSize = worldSize / 10;
+
+        /// <summary>
+        /// True if the simulation has tracking mechanic enabled, else false
+        /// </summary>
+        public static bool WithTracks = true;
+        public const bool WithPrint = true;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+
+        public const int rndSeed = -1;
+    }
+}
+
+
+Na 100 rondes met tracks, 93 extinctions
+Na 100 rondes zonder tracks, 0 extinctions
+
+
+
+
+
+
+
+
+Gebruikt voor mean prey eaten:
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Project1
+{
+    public struct Config
+    {
+        public const int worldSize = 512;
+
+        public const double deathRate = 0.2;
+        public const double birthRate = 0.3;
+        public const double walkRate = 0.3;
+        public const int walkDistance = 5;
+
+
+        public const double predationRate = 0.6;
+
+        public const int tracksStrength = 5;
+
+        public const double predatorDensity = 0.20;
+        public const double preyDensity = 0.20;
+
+        public const int amountOfRounds = 500;
+
+        public const int BlockSize = worldSize / 10;
+
+        /// <summary>
+        /// True if the simulation has tracking mechanic enabled, else false
+        /// </summary>
+        public static bool WithTracks = false;
+        public const bool WithPrint = true;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+
+        public const int rndSeed = -1;
+    }
+}
+
+
+uitslag: 
+
+Mean and sd without tracks:
+(0,9887483422933605, 2,024620179870338E-05)
+Mean and sd with tracks:
+(0,9835956010771666, 4,516239810642716E-05)
+p-value lower predation mean with tracks:
+1,0531395809957277E-70
+
+Confidence interval [without - with]:
+(0,005136344182752277, 0,005169138249635548)
+
+
+
+
+
+
+
+
+Onderzoek naar verschillende tracks strengths, zonder walkDistance aan te passen:
+Gebruik dezelfde parameters als bij rondes tot extinction zonder/met tracks.
+
+Uitslag tussen 5 en 10:
+Amount of successes without change:
+50
+Amount of successes with change:
+50
+Mean and sd without change:
+(23,92, 3,626789213615812)
+Mean and sd with change:
+(24,96, 3,310347413792094)
+p value more rounds without change:
+0,9296767093914635
+p value more rounds with change:
+0,07032329060853654
+
+Confidence interval [without - with]:
+(-2,4010926434302693, 0,321092643430271)
