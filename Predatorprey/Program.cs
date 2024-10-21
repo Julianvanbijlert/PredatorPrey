@@ -12,7 +12,7 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new RoundsUntilExtinctionWHuntingProgram();
+            Program p = new DiffTrackStrengthWithWalkDistanceProgram(new [] {3, 5, 10, 20});
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
             p.Run(10);
@@ -254,6 +254,44 @@ namespace Project1
         {
             if(Config.WithTracks) wTracks.Add(simulation.averagePredation);
             else woTracks.Add(simulation.averagePredation);
+        }
+    }
+
+    internal class DiffTrackStrengthWithWalkDistanceProgram : Program
+    {
+        private readonly int[] _tracksStrengths;
+        private int _currentIndex = 0;
+        private List<int>[] _roundsPerStrength;
+        public DiffTrackStrengthWithWalkDistanceProgram(int[] tracksStrengths)
+        {
+            this._tracksStrengths = tracksStrengths;
+            for (int i = 0; i < tracksStrengths.Length; i++) _roundsPerStrength[i] = new List<int>();
+        }
+
+        protected override void Run(int amountOfRuns)
+        {
+            for (; _currentIndex < _tracksStrengths.Length; _currentIndex++)
+            {
+                Config.tracksStrength = _tracksStrengths[_currentIndex];
+                Config.walkDistance   = _tracksStrengths[_currentIndex];
+                base.Run(amountOfRuns);
+            }
+
+            MeanDifference md = new MeanDifference();
+
+            for (int i = 0; i < _tracksStrengths.Length; i++)
+            {
+                Console.WriteLine($"\nMean and sd for trackStrength = walkDistance = {_tracksStrengths[i]}:");
+                Console.WriteLine(md.GetMeanAndSd(_roundsPerStrength[i].Select(x => (double)x).ToArray()));
+            }
+        }
+
+        public override void OnSimulationEnd()
+        {
+            if (simulation.Extinction())
+            {
+                _roundsPerStrength[_currentIndex].Add(simulation.roundNumber);
+            }
         }
     }
 
