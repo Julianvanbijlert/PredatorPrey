@@ -265,6 +265,7 @@ namespace Project1
         public DiffTrackStrengthWithWalkDistanceProgram(int[] tracksStrengths)
         {
             this._tracksStrengths = tracksStrengths;
+            _roundsPerStrength = new List<int>[tracksStrengths.Length];
             for (int i = 0; i < tracksStrengths.Length; i++) _roundsPerStrength[i] = new List<int>();
         }
 
@@ -277,11 +278,12 @@ namespace Project1
                 base.Run(amountOfRuns);
             }
 
+            Console.WriteLine($"\nDone after {amountOfRuns} simulations per variant.");
             MeanDifference md = new MeanDifference();
 
             for (int i = 0; i < _tracksStrengths.Length; i++)
             {
-                Console.WriteLine($"\nMean and sd for trackStrength = walkDistance = {_tracksStrengths[i]}:");
+                Console.WriteLine($"\nMean and sd between {_roundsPerStrength[i].Count} extinctions for trackStrength = walkDistance = {_tracksStrengths[i]}:");
                 Console.WriteLine(md.GetMeanAndSd(_roundsPerStrength[i].Select(x => (double)x).ToArray()));
             }
         }
