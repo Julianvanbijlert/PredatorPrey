@@ -12,10 +12,10 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new Program();
+            Program p = new RoundsUntilExtinctionWHuntingProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(1);
+            p.Run(10);
         }
 
         /// <summary>
@@ -60,11 +60,11 @@ namespace Project1
         protected override void Run(int amountOfRuns)
         {
             SetInitial();
-            GetRoundUntilExtinctionSample(amountOfRuns);
+            base.Run(amountOfRuns);
 
             Change();
             _changeIsActive = true;
-            GetRoundUntilExtinctionSample(amountOfRuns);
+            base.Run(amountOfRuns);
 
             double[] withoutChange = roundsWOChange.Select(x => (double)x).ToArray();
             double[] withChange = roundsWChange.Select(x => (double)x).ToArray();
@@ -92,14 +92,6 @@ namespace Project1
 
             Console.WriteLine("\nConfidence interval [without - with]:");
             Console.WriteLine(md.GetConfidenceIntervalDifference(withoutChange, withChange));
-        }
-
-        private void GetRoundUntilExtinctionSample(int amountOfRuns)
-        {
-            for (int x = 0; x < amountOfRuns; x++)
-            {
-                simulation.Run();
-            }
         }
 
         public override void OnSimulationEnd()
