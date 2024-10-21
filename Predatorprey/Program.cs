@@ -15,7 +15,7 @@ namespace Project1
             Program p = new DiffTrackStrengthWithWalkDistanceProgram(new [] {3, 5, 10, 20});
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(10);
+            p.Run(100);
         }
 
         /// <summary>
