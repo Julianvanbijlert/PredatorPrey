@@ -12,10 +12,10 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new DiffTrackStrengthWithWalkDistanceProgram(new [] {3, 5, 10, 20});
+            Program p = new Program();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(100);
+            p.Run(1);
         }
 
         /// <summary>
