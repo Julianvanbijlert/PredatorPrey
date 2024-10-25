@@ -11,7 +11,9 @@
         let drawingData;
         let prey = [];
         let predator = [];
-        const size = 512 * 512 ;
+        const worldSize = 512;
+        const entSize = 1;
+        const size = worldSize * worldSize * entSize * entSize;
         const width = 600;
         const height = 600;
         let dataLoaded = false;
@@ -63,12 +65,12 @@
                 for (let j = 0; j < grid[i].length; j++) {
                     if (grid[i][j] === 1) {
                         fill(0, 255, 0);
-                        rect(j * 10, i * 10, 10, 10); 
+                        rect(j * entSize, i * entSize, entSize, entSize); 
                     } 
                     
                     if (grid[i][j] === 2) {
                         fill(255, 0, 0);
-                        rect(j * 10, i * 10, 10, 10);  
+                        rect(j * entSize, i * entSize, entSize, entSize);  
                     }
                 }
             }

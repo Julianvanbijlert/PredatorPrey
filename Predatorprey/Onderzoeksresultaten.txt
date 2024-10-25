@@ -275,3 +275,57 @@ Confidence interval [without - with]:
 (-2,4010926434302693, 0,321092643430271)
 
 Uitslagen tussen 3 en 20 staan in het verslag in een tabel.
+
+
+
+
+Test met tracksStrength = walkDistance:
+Parameters
+        public const int worldSize = 512;
+
+        public const double deathRate = 0.025;
+        public const double birthRate = 0.1;
+        public const double walkRate = 0.3;
+        public static int walkDistance = 5;
+
+
+        public const double predationRate = 0.8;
+
+        public static int tracksStrength = 5;
+
+        public const double predatorDensity = 0.15;
+        public const double preyDensity = 0.15;
+
+        public const int amountOfRounds = 210;
+
+        public const int BlockSize = worldSize / 10;
+
+        /// <summary>
+        /// True if the simulation has tracking mechanic enabled, else false
+        /// </summary>
+        public static bool WithTracks = true;
+        public const bool WithPrint = true;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+
+        public const int rndSeed = -1;
+
+
+
+Output: 
+Done after 100 simulations per variant.
+
+Mean and sd between 100 extinctions for trackStrength = walkDistance = 3:
+(35,31, 9,610093651989038)
+
+Mean and sd between 100 extinctions for trackStrength = walkDistance = 5:
+(23,71, 3,4184645676092646)
+
+Mean and sd between 100 extinctions for trackStrength = walkDistance = 10:
+(25,71, 2,8611011866063034)
+
+Mean and sd between 100 extinctions for trackStrength = walkDistance = 20:
+(28,83, 2,912232820363098)

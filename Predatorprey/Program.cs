@@ -60,11 +60,11 @@ namespace Project1
         protected override void Run(int amountOfRuns)
         {
             SetInitial();
-            GetRoundUntilExtinctionSample(amountOfRuns);
+            base.Run(amountOfRuns);
 
             Change();
             _changeIsActive = true;
-            GetRoundUntilExtinctionSample(amountOfRuns);
+            base.Run(amountOfRuns);
 
             double[] withoutChange = roundsWOChange.Select(x => (double)x).ToArray();
             double[] withChange = roundsWChange.Select(x => (double)x).ToArray();
@@ -92,14 +92,6 @@ namespace Project1
 
             Console.WriteLine("\nConfidence interval [without - with]:");
             Console.WriteLine(md.GetConfidenceIntervalDifference(withoutChange, withChange));
-        }
-
-        private void GetRoundUntilExtinctionSample(int amountOfRuns)
-        {
-            for (int x = 0; x < amountOfRuns; x++)
-            {
-                simulation.Run();
-            }
         }
 
         public override void OnSimulationEnd()
@@ -262,6 +254,46 @@ namespace Project1
         {
             if(Config.WithTracks) wTracks.Add(simulation.averagePredation);
             else woTracks.Add(simulation.averagePredation);
+        }
+    }
+
+    internal class DiffTrackStrengthWithWalkDistanceProgram : Program
+    {
+        private readonly int[] _tracksStrengths;
+        private int _currentIndex = 0;
+        private List<int>[] _roundsPerStrength;
+        public DiffTrackStrengthWithWalkDistanceProgram(int[] tracksStrengths)
+        {
+            this._tracksStrengths = tracksStrengths;
+            _roundsPerStrength = new List<int>[tracksStrengths.Length];
+            for (int i = 0; i < tracksStrengths.Length; i++) _roundsPerStrength[i] = new List<int>();
+        }
+
+        protected override void Run(int amountOfRuns)
+        {
+            for (; _currentIndex < _tracksStrengths.Length; _currentIndex++)
+            {
+                Config.tracksStrength = _tracksStrengths[_currentIndex];
+                Config.walkDistance   = _tracksStrengths[_currentIndex];
+                base.Run(amountOfRuns);
+            }
+
+            Console.WriteLine($"\nDone after {amountOfRuns} simulations per variant.");
+            MeanDifference md = new MeanDifference();
+
+            for (int i = 0; i < _tracksStrengths.Length; i++)
+            {
+                Console.WriteLine($"\nMean and sd between {_roundsPerStrength[i].Count} extinctions for trackStrength = walkDistance = {_tracksStrengths[i]}:");
+                Console.WriteLine(md.GetMeanAndSd(_roundsPerStrength[i].Select(x => (double)x).ToArray()));
+            }
+        }
+
+        public override void OnSimulationEnd()
+        {
+            if (simulation.Extinction())
+            {
+                _roundsPerStrength[_currentIndex].Add(simulation.roundNumber);
+            }
         }
     }
 
