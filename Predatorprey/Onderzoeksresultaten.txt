@@ -329,3 +329,68 @@ Mean and sd between 100 extinctions for trackStrength = walkDistance = 10:
 
 Mean and sd between 100 extinctions for trackStrength = walkDistance = 20:
 (28,83, 2,912232820363098)
+
+
+
+
+
+Periodes met lagere en hogere predation rate
+Parameters: 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Project1
+{
+    public struct Config
+    {
+        public const int worldSize = 512;
+
+        public const double deathRate = 0.2;
+        public const double birthRate = 0.3;
+        public const double walkRate = 0.3;
+        public static int walkDistance = 5;
+
+
+        public static double predationRate = 0.6;
+
+        public static int tracksStrength = 5;
+
+        public const double predatorDensity = 0.2;
+        public const double preyDensity = 0.2;
+
+        public const int amountOfRounds = 500;
+
+        public const int BlockSize = worldSize / 10;
+
+        /// <summary>
+        /// True if the simulation has tracking mechanic enabled, else false
+        /// </summary>
+        public static bool WithTracks = true;
+        public static bool WithPrint = false;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+
+        public const int rndSeed = -1;
+    }
+}
+
+Eerste predation rate is 0.2, tweede is 0.8.
+
+Resultaten: 
+Mean and sd without change:
+(1,299894957983193, 6,391624605228192)
+Mean and sd with change:
+(1,4890109890109886, 7,299754012725322)
+p value more rounds without change:
+0,6684296561973785
+p value more rounds with change:
+0,3315703438026215
+
+Confidence interval [without - with]:
+(-1,0395811202599674, 0,6613490582043763)
