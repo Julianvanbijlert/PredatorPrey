@@ -12,10 +12,10 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new Program();
+            Program p = new OscilationProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
-            p.Run(1);
+            p.Run(50);
         }
 
         /// <summary>
@@ -283,4 +283,78 @@ namespace Project1
             else amountOfNoExtinctions++;
         }
     }
+
+    internal class TrackDifferenceGraphProgram : Program
+    {
+        protected override void Run(int amountOfRuns)
+        {
+            Config.WithTracks = false;
+            Config.WithPrint = false;
+
+                simulation.Run();
+            PlotManager pmwo = simulation.GetPlotManager();
+            pmwo.Fourier();
+            
+
+
+            Config.WithTracks = true;
+                simulation.Run();
+
+            PlotManager pmw = simulation.GetPlotManager();
+            pmw.Fourier();
+
+            PlotManager.SaveTwoPlots(pmwo, pmw);
+
+            
+        }
+
+    }
+
+    internal class OscilationProgram : Program
+    {
+        protected override void Run(int amountOfRuns)
+        {
+            Config.WithTracks = false;
+            Config.WithPrint = false;
+            double[] withoutChange = new double[Config.amountOfRounds];
+            double[] withChange = new double[Config.amountOfRounds];
+
+            for (int i = 0; i < amountOfRuns; i++)
+            {
+                simulation.Run();
+                PlotManager pmwo = simulation.GetPlotManager();
+                withoutChange[i] = pmwo.Fourier().Item3;
+
+            }
+
+           
+
+            Config.WithTracks = true;
+
+            for (int i = 0; i < amountOfRuns; i++)
+            {
+                simulation.Run();
+                PlotManager pmw = simulation.GetPlotManager();
+                withChange[i] = pmw.Fourier().Item3;
+            }
+
+            MeanDifference md = new MeanDifference();
+
+            Console.WriteLine("Mean and sd without change:");
+            Console.WriteLine(md.GetMeanAndSd(withoutChange));
+
+            Console.WriteLine("Mean and sd with change:");
+            Console.WriteLine(md.GetMeanAndSd(withChange));
+
+            Console.WriteLine("p value more rounds without change:");
+            Console.WriteLine(md.GetPDifferenceTwoIsGreater(withChange, withoutChange));
+
+            Console.WriteLine("p value more rounds with change:");
+            Console.WriteLine(md.GetPDifferenceTwoIsGreater(withoutChange, withChange));
+
+            Console.WriteLine("\nConfidence interval [without - with]:");
+            Console.WriteLine(md.GetConfidenceIntervalDifference(withoutChange, withChange));
+        }
+    }
+
 }

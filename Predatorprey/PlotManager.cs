@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using ScottPlot;
 
@@ -31,14 +32,7 @@ namespace Project1
 
             preyCount.Enqueue(prey);
             predatorCount.Enqueue(predator);
-
-            if (preyCount.Count > Config.worldSize)
-            {
-                preyCount.Dequeue();
-                predatorCount.Dequeue();
-
-            }
-
+            
             roundCount[round] = round;
 
 
@@ -61,14 +55,42 @@ namespace Project1
 
         public void SavePlot()
         {
-            _plot.Clear();
             _plot.Add.Scatter(roundCount, predatorCount.ToArray());
             _plot.Add.Scatter(roundCount, preyCount.ToArray());
-            _plot.Add.Scatter(roundCount, entityCount);
+            //_plot.Add.Scatter(roundCount, entityCount);
 
 
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
             _plot.SavePng($"../../../Graphs/{timestamp}.png", 600, 400);
+        }
+
+        /// <summary>
+        /// First plot is without hunting, second plot is with hunting
+        /// </summary>
+        public static void SaveTwoPlots(PlotManager plot1, PlotManager plot2)
+        {
+
+            Plot plt = new Plot();
+           var a = plt.Add.Scatter(plot1.roundCount, plot1.predatorCount.ToArray());
+           var b = plt.Add.Scatter(plot1.roundCount, plot1.preyCount.ToArray());
+
+           var c =  plt.Add.Scatter(plot2.roundCount, plot2.predatorCount.ToArray());
+           var d =  plt.Add.Scatter(plot2.roundCount, plot2.preyCount.ToArray());
+
+           a.Color = Colors.Red;  //pred
+           b.Color = Colors.Green; //prey
+
+           c.Color = Colors.DarkOrange;  //pred
+           c.LinePattern =  LinePattern.Dashed;
+            d.Color = Colors.LightGreen;  //prey
+            d.LinePattern = LinePattern.Dashed;
+
+
+
+            plt.XLabel("Rounds");
+           plt.YLabel( "Amount of entities");
+
+            plt.SavePng($"../../../Graphs/{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.png", 600, 400);
         }
 
 
@@ -77,6 +99,11 @@ namespace Project1
             var data = new DrawingData { prey = preyCount.ToArray(), predator = predatorCount.ToArray(), Egrid = grid };
             var jsonString = JsonSerializer.Serialize(data);
             File.WriteAllText("../../../JSON/output.json", jsonString);
+        }
+
+        public (double, double, double) Fourier()
+        {
+           return FourierTransform.GetTopFrequency(preyCount.Select(x => (double) x).ToArray());
         }
 
         public class DrawingData

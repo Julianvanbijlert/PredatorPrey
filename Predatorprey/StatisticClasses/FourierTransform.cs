@@ -12,7 +12,7 @@ namespace Project1
     internal class FourierTransform
     {
         // this method was made by ChatGPT, I do not know how to check the validity of it
-        public void GetTopFrequency(double[] preyAmounts)
+        public static (double, double, double) GetTopFrequency(double[] preyAmounts)
         {
             int n = preyAmounts.Length;
 
@@ -52,6 +52,8 @@ namespace Project1
             Console.WriteLine($"Dominant frequency index: {peakIndex}");
             Console.WriteLine($"Dominant frequency: {frequency}");
             Console.WriteLine($"Estimated period: {period}");
+
+            return (peakIndex, frequency, period);
         }
     }
 }

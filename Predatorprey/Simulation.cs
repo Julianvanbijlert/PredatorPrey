@@ -52,13 +52,14 @@ namespace Project1
             Initialize();
 
             for (roundNumber = 0; roundNumber < Config.amountOfRounds && !Extinction(); roundNumber++)
+            //for (roundNumber = 0; roundNumber < Config.amountOfRounds; roundNumber++)
             {
                 Round();
                 
-                //_plotManager.SaveJson();
+                _plotManager.SaveJson();
             }
 
-            //_plotManager.SavePlot();
+            _plotManager.SavePlot();
             _program.OnSimulationEnd();
         }
 
@@ -101,7 +102,7 @@ namespace Project1
             //Output.PrintWorld(_world);
             //Output.PrintList(_world);
 
-            //SaveStats(roundNumber);
+            SaveStats(roundNumber);
             if(Config.WithPrint)
                 _world.PrintStats();
         }
@@ -143,5 +144,11 @@ namespace Project1
 
             return true;
         }
+        public PlotManager GetPlotManager()
+        {
+            return _plotManager;
+        }
     }
+
+   
 }

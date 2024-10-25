@@ -10,20 +10,20 @@ namespace Project1
     {
         public const int worldSize = 512;
 
-        public const double deathRate = 0.025;
-        public const double birthRate = 0.1;
+        public const double deathRate = 0.2;
+        public const double birthRate = 0.3;
         public const double walkRate = 0.3;
         public static int walkDistance = 5;
 
 
-        public const double predationRate = 0.8;
+        public const double predationRate = 0.6;
 
         public static int tracksStrength = 5;
 
-        public const double predatorDensity = 0.15;
-        public const double preyDensity = 0.15;
+        public const double predatorDensity = 0.2;
+        public const double preyDensity = 0.2;
 
-        public const int amountOfRounds = 210;
+        public const int amountOfRounds = 500;
 
         public const int BlockSize = worldSize / 10;
 
@@ -31,7 +31,7 @@ namespace Project1
         /// True if the simulation has tracking mechanic enabled, else false
         /// </summary>
         public static bool WithTracks = true;
-        public const bool WithPrint = true;
+        public static bool WithPrint = true;
 
         /// <summary>
         /// The seed which is used for the Random object.
