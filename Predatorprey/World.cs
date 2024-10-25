@@ -298,7 +298,7 @@ namespace Project1
 
         public void AddStatsToPM(PlotManager pm, int round)
         {
-            pm.AddData(round, AmountOfEntities, AmountOfPredators, AmountOfPrey, entities);
+            pm.AddData(round, AmountOfEntities, AmountOfPrey, AmountOfPredators, entities);
         }
 
 
