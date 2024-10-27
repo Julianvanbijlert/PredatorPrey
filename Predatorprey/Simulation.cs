@@ -56,10 +56,10 @@ namespace Project1
             {
                 Round();
                 
-                _plotManager.SaveJson();
+                if(Config.WithGraph) _plotManager.SaveJson();
             }
 
-            _plotManager.SavePlot();
+            if(Config.WithGraph) _plotManager.SavePlot();
             _program.OnSimulationEnd();
         }
 

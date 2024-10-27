@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project1
 {
@@ -16,7 +12,7 @@ namespace Project1
         public static int walkDistance = 5;
 
 
-        public const double predationRate = 0.6;
+        public static double predationRate = 0.6;
 
         public static int tracksStrength = 5;
 
@@ -30,8 +26,10 @@ namespace Project1
         /// <summary>
         /// True if the simulation has tracking mechanic enabled, else false
         /// </summary>
-        public static bool WithTracks = true;
-        public static bool WithPrint = true;
+        public static bool WithTracks = false;
+        public static bool WithPrint = false;
+
+        public const bool WithGraph = false;
 
         /// <summary>
         /// The seed which is used for the Random object.

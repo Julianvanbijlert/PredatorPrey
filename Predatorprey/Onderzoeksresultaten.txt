@@ -380,17 +380,72 @@ namespace Project1
     }
 }
 
-Eerste predation rate is 0.2, tweede is 0.8.
+Eerste predation rate is 0.2, tweede is 0.8. 50 simulaties per variant.
 
 Resultaten: 
 Mean and sd without change:
-(1,299894957983193, 6,391624605228192)
+(31,02003547707882, 2,879453473772292)
 Mean and sd with change:
-(1,4890109890109886, 7,299754012725322)
-p value more rounds without change:
-0,6684296561973785
-p value more rounds with change:
-0,3315703438026215
+(38,021978021978065, 1,0071594933968868)
+p value higher period without change:
+1
+p value higher period with change:
+1,1953799442986602E-21
 
 Confidence interval [without - with]:
-(-1,0395811202599674, 0,6613490582043763)
+(-7,847501290329484, -6,156383799469003)
+
+
+
+
+Onderzoek naar verschil in periode zonder en met tracking:
+
+Gebruikte parameters: 
+public const int worldSize = 512;
+
+        public const double deathRate = 0.2;
+        public const double birthRate = 0.3;
+        public const double walkRate = 0.3;
+        public static int walkDistance = 5;
+
+
+        public static double predationRate = 0.6;
+
+        public static int tracksStrength = 5;
+
+        public const double predatorDensity = 0.2;
+        public const double preyDensity = 0.2;
+
+        public const int amountOfRounds = 500;
+
+        public const int BlockSize = worldSize / 10;
+
+        /// <summary>
+        /// True if the simulation has tracking mechanic enabled, else false
+        /// </summary>
+        public static bool WithTracks = false;
+        public static bool WithPrint = false;
+
+        public const bool WithGraph = false;
+
+        /// <summary>
+        /// The seed which is used for the Random object.
+        /// -1 if you want a random seed to be used.
+        /// </summary>
+
+        public const int rndSeed = -1;
+
+50 simulaties per variant
+
+Resultaten: 
+Mean and sd without change:
+(34,86904761904763, 1,2923111185820866)
+Mean and sd with change:
+(49,54545454545455, 1,363636363636361)
+p value higher period without change:
+1
+p value higher period with change:
+4,239075861914307E-46
+
+Confidence interval [without - with]:
+(-15,197160311565643, -14,155653541248196)

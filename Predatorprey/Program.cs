@@ -323,14 +323,13 @@ namespace Project1
             Config.WithTracks = false;
             Config.WithPrint = false;
 
-                simulation.Run();
+            simulation.Run();
             PlotManager pmwo = simulation.GetPlotManager();
             pmwo.Fourier();
-            
 
 
-            Config.WithTracks = true;
-                simulation.Run();
+            Config.WithTracks = true; 
+            simulation.Run();
 
             PlotManager pmw = simulation.GetPlotManager();
             pmw.Fourier();
@@ -356,12 +355,9 @@ namespace Project1
                 simulation.Run();
                 PlotManager pmwo = simulation.GetPlotManager();
                 withoutChange[i] = pmwo.Fourier().Item3;
-
             }
 
-           
 
-            Config.WithTracks = true;
 
             for (int i = 0; i < amountOfRuns; i++)
             {
@@ -372,16 +368,16 @@ namespace Project1
 
             MeanDifference md = new MeanDifference();
 
-            Console.WriteLine("Mean and sd without change:");
+            Console.WriteLine("\nMean and sd without change:");
             Console.WriteLine(md.GetMeanAndSd(withoutChange));
 
             Console.WriteLine("Mean and sd with change:");
             Console.WriteLine(md.GetMeanAndSd(withChange));
 
-            Console.WriteLine("p value more rounds without change:");
+            Console.WriteLine("p value higher period without change:");
             Console.WriteLine(md.GetPDifferenceTwoIsGreater(withChange, withoutChange));
 
-            Console.WriteLine("p value more rounds with change:");
+            Console.WriteLine("p value higher period with change:");
             Console.WriteLine(md.GetPDifferenceTwoIsGreater(withoutChange, withChange));
 
             Console.WriteLine("\nConfidence interval [without - with]:");
