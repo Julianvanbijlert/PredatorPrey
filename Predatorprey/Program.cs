@@ -12,7 +12,7 @@ namespace Project1
 
         public static void Main()
         {
-            Program p = new OscilationProgram();
+            Program p = new TrackDifferenceGraphProgram();
             Simulation sim = new Simulation(p, GetNewRandom());
             p.simulation = sim;
             p.Run(50);
@@ -321,7 +321,7 @@ namespace Project1
         protected override void Run(int amountOfRuns)
         {
             Config.WithTracks = false;
-            Config.WithPrint = false;
+            Config.WithGraph = true;
 
             simulation.Run();
             PlotManager pmwo = simulation.GetPlotManager();
